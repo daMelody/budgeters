@@ -1,0 +1,2 @@
+? explore possibility of using tui-rs
+! implement Display for Account, Category, Transaction
