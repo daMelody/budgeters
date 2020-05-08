@@ -3,11 +3,25 @@ use std::fs::{self, ReadDir};
 use std::path::{Path, PathBuf};
 use std::str;
 
-// importing structures
-mod table;
-use table::Table;
+mod table; // bringing table module into scope
+use table::Table; // import Table struct for use
 
-// METHODS are here
+pub fn setup(sub_dir: String) -> Table {
+    let mut new_table = Table::new();
+    let mut dir_name = String::from("/budget_tracker/");
+    dir_name.push_str(&sub_dir);
+    match fs::read_dir(Path::new(&get_dir_path(dir_name))) {
+        Ok(files) => parse_dir(&mut new_table, files),
+        Err(e) => {
+            eprintln!("Error setting up: {}", e);
+            new_table
+        }
+    }
+}
+
+pub fn run(data: &mut Table) {
+    println!("{:?}", data.accounts);
+}
 
 pub fn get_dir_name(mut args: std::env::Args) -> Result<String, &'static str> {
     args.next(); // advance iterator the the first item
@@ -24,23 +38,6 @@ pub fn get_dir_name(mut args: std::env::Args) -> Result<String, &'static str> {
     Ok(year)
 }
 
-pub fn setup(sub_dir: String) -> Table {
-    let new_table = Table::new();
-    let mut dir_name = String::from("/budget_tracker/");
-    dir_name.push_str(&sub_dir);
-    match fs::read_dir(Path::new(&get_dir_path(dir_name))) {
-        Ok(files) => parse_dir(new_table, files),
-        Err(e) => {
-            eprintln!("Error setting up: {}", e);
-            new_table
-        }
-    }
-}
-
-pub fn run(data: &mut Table) {
-    println!("{}", data.accounts.len());
-}
-
 fn get_dir_path(dir_name: String) -> String {
     let home = match home::home_dir() {
         Some(path) => path,
@@ -55,12 +52,12 @@ fn get_dir_path(dir_name: String) -> String {
     root
 }
 
-fn parse_dir(new_table: Table, files: ReadDir) -> Table {
+fn parse_dir(new_table: &mut Table, files: ReadDir) -> Table {
     for f in files {
         match f {
             Ok(f) => {
                 if let Ok(contents) = fs::read_to_string(f.path()) {
-                    parse_file(&mut new_table.clone(), contents, f.path());
+                    parse_file(new_table, contents, f.path());
                 } else {
                     eprintln!("Error converting file to String, making new list");
                 }
@@ -70,7 +67,7 @@ fn parse_dir(new_table: Table, files: ReadDir) -> Table {
             }
         };
     }
-    new_table
+    new_table.clone()
 }
 
 fn parse_file(new_table: &mut Table, contents: String, filename: PathBuf) {
