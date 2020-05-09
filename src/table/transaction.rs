@@ -49,7 +49,7 @@ impl fmt::Display for Transaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "{}\t{}\t{}\t{}\t{}",
+            "{}\t{}\t\t{}\t\t{}\t\t{}",
             self.date, self.amount, self.account, self.category, self.description
         )
     }

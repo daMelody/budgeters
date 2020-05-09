@@ -37,6 +37,6 @@ impl Category {
 
 impl fmt::Display for Category {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}\t{}\t{}", self.name, self.expected, self.actual)
+        write!(f, "{}\t\t{}\t\t{}", self.name, self.expected, self.actual)
     }
 }

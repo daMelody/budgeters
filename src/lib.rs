@@ -20,11 +20,7 @@ pub fn setup(sub_dir: String) -> Table {
 }
 
 pub fn run(data: &mut Table) {
-    data.display("accounts");
-    println!();
-    data.display("categories");
-    println!();
-    data.display("transactions");
+    prompt();
 }
 
 pub fn get_dir_name(mut args: std::env::Args) -> Result<String, &'static str> {

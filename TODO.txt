@@ -1,3 +1,2 @@
 ? explore possibility of using tui-rs
 ! refine Display for Account, Category, Transaction
-* figure out why the last line of each table is full of empty strings and zeroes

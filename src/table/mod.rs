@@ -27,6 +27,7 @@ impl Table {
             let mut cells = line.split(",");
             accounts.push(Account::new(cells.next(), cells.next()));
         }
+        accounts.remove(accounts.len() - 1);
         self.accounts = accounts;
     }
 
@@ -36,6 +37,7 @@ impl Table {
             let mut cells = line.split(",");
             categories.push(Category::new(cells.next(), cells.next(), cells.next()));
         }
+        categories.remove(categories.len() - 1);
         self.categories = categories;
     }
 
@@ -51,6 +53,7 @@ impl Table {
                 cells.next(),
             ));
         }
+        transactions.remove(transactions.len() - 1);
         self.transactions = transactions;
     }
 
@@ -60,16 +63,19 @@ impl Table {
                 for acc in self.accounts.as_slice() {
                     println!("{}", acc);
                 }
+                println!();
             }
             "categories" => {
                 for cat in self.categories.as_slice() {
                     println!("{}", cat);
                 }
+                println!();
             }
             "transactions" => {
                 for tran in self.transactions.as_slice() {
                     println!("{}", tran);
                 }
+                println!();
             }
             _ => (),
         }
