@@ -16,4 +16,5 @@ built from three "tables"
 -e <type> <id> : edit the <type> entry according to the <id>
 -d <type> <id> : delete the <type> entry according to the <id>
     * NOTE: if <type> is <Account>/<Category>, any <Transaction> or <Transfer> will still show that entry
+-l <type> : list the table for one type
 -s <string>: search Transaction table by the <string>
