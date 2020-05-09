@@ -1,3 +1,4 @@
+use std::fmt;
 #[derive(Debug, Clone)]
 pub struct Category {
     name: String,
@@ -31,5 +32,11 @@ impl Category {
                 None => 0.0,
             },
         }
+    }
+}
+
+impl fmt::Display for Category {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}\t{}\t{}", self.name, self.expected, self.actual)
     }
 }

@@ -1,4 +1,4 @@
-use home;
+use home; // for the home_dir function
 use std::fs::{self, ReadDir};
 use std::path::{Path, PathBuf};
 use std::str;
@@ -20,7 +20,11 @@ pub fn setup(sub_dir: String) -> Table {
 }
 
 pub fn run(data: &mut Table) {
-    println!("{:?}", data.accounts);
+    data.display("accounts");
+    println!();
+    data.display("categories");
+    println!();
+    data.display("transactions");
 }
 
 pub fn get_dir_name(mut args: std::env::Args) -> Result<String, &'static str> {
@@ -72,11 +76,11 @@ fn parse_dir(new_table: &mut Table, files: ReadDir) -> Table {
 
 fn parse_file(new_table: &mut Table, contents: String, filename: PathBuf) {
     if filename.ends_with("Account.cls") {
-        Table::build_accounts(new_table, contents);
+        new_table.build_accounts(contents);
     } else if filename.ends_with("Category.cls") {
-        Table::build_categories(new_table, contents);
+        new_table.build_categories(contents);
     } else if filename.ends_with("Transaction.cls") {
-        Table::build_transactions(new_table, contents);
+        new_table.build_transactions(contents);
     } else {
         eprintln!("Unexpected filename");
     }

@@ -1,8 +1,8 @@
 mod account;
-use account::Account;
 mod category;
-use category::Category;
 mod transaction;
+use account::Account;
+use category::Category;
 use transaction::Transaction;
 
 #[derive(Clone, Debug)]
@@ -52,5 +52,26 @@ impl Table {
             ));
         }
         self.transactions = transactions;
+    }
+
+    pub fn display(&self, table: &str) {
+        match table {
+            "accounts" => {
+                for acc in self.accounts.as_slice() {
+                    println!("{}", acc);
+                }
+            }
+            "categories" => {
+                for cat in self.categories.as_slice() {
+                    println!("{}", cat);
+                }
+            }
+            "transactions" => {
+                for tran in self.transactions.as_slice() {
+                    println!("{}", tran);
+                }
+            }
+            _ => (),
+        }
     }
 }

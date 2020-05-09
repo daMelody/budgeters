@@ -1,3 +1,4 @@
+use std::fmt;
 #[derive(Clone, Debug)]
 pub struct Account {
     name: String,
@@ -19,5 +20,11 @@ impl Account {
                 None => 0.0,
             },
         }
+    }
+}
+
+impl fmt::Display for Account {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}\t{}", self.name, self.value)
     }
 }
