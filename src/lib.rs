@@ -6,6 +6,21 @@ use std::str;
 mod table; // bringing table module into scope
 use table::Table; // import Table struct for use
 
+pub fn get_dir_name(mut args: std::env::Args) -> Result<String, &'static str> {
+    args.next(); // advance iterator the the first item
+    let month = match args.next() {
+        Some(m) => m,
+        None => return Err("Didn't get a month"),
+    };
+    let mut year = match args.next() {
+        Some(y) => y,
+        None => return Err("Didn't get a year"),
+    };
+    year.push('/');
+    year.push_str(&month);
+    Ok(year)
+}
+
 pub fn setup(sub_dir: String) -> Table {
     let mut new_table = Table::new();
     let mut dir_name = String::from("/budget_tracker/");
@@ -20,22 +35,9 @@ pub fn setup(sub_dir: String) -> Table {
 }
 
 pub fn run(data: &mut Table) {
-    prompt();
-}
-
-pub fn get_dir_name(mut args: std::env::Args) -> Result<String, &'static str> {
-    args.next(); // advance iterator the the first item
-    let month = match args.next() {
-        Some(m) => m,
-        None => return Err("Didn't get a month"),
-    };
-    let mut year = match args.next() {
-        Some(y) => y,
-        None => return Err("Didn't get a year"),
-    };
-    year.push('/');
-    year.push_str(&month);
-    Ok(year)
+    data.display("accounts");
+    data.display("categories");
+    data.display("transactions");
 }
 
 fn get_dir_path(dir_name: String) -> String {
@@ -81,3 +83,95 @@ fn parse_file(new_table: &mut Table, contents: String, filename: PathBuf) {
         eprintln!("Unexpected filename");
     }
 }
+
+/* getting the commands
+
+enum Command<'a> {
+    Empty,
+    List(String),
+    Search(String, u32),
+    Delete(String, u32),
+    Add(str::SplitWhitespace<'a>),
+    Edit(str::SplitWhitespace<'a>),
+}
+
+fn prompt<'a>() -> Command<'a> {
+    print!("$: ");
+    io::stdout().flush().unwrap();
+    let mut buffer = String::new();
+    match io::stdin().read_line(&mut buffer) {
+        Ok(u) => u,
+        Err(e) => {
+            eprintln!("Error reading command: {}", e);
+            return Command::Empty;
+        }
+    };
+    parse_command(buffer)
+}
+
+fn parse_command<'a>(buffer: String) -> Command<'a> {
+    let mut iter = buffer.split_whitespace();
+    let command = match iter.next() {
+        Some(st) => st,
+        None => {
+            eprintln!("There was no command to parse");
+            return Command::Empty;
+        }
+    };
+    match command {
+        "-l" => Command::List(match iter.next() {
+            Some(table_type) => String::from(table_type),
+            None => {
+                eprintln!("Couldn't parse type for list");
+                return Command::Empty;
+            }
+        }),
+        "-s" => Command::Search(
+            match iter.next() {
+                Some(table_type) => String::from(table_type),
+                None => {
+                    eprintln!("Couldn't parse type for list");
+                    return Command::Empty;
+                }
+            },
+            match iter.next() {
+                Some(possible_num) => match possible_num.parse() {
+                    Ok(num) => num,
+                    Err(e) => {
+                        eprintln!("Conversion error: {}", e);
+                        return Command::Empty;
+                    }
+                },
+                None => {
+                    eprintln!("Couldn't parse type for list");
+                    return Command::Empty;
+                }
+            },
+        ),
+        "-d" => Command::Delete(
+            match iter.next() {
+                Some(table_type) => String::from(table_type),
+                None => {
+                    eprintln!("Couldn't parse type for list");
+                    return Command::Empty;
+                }
+            },
+            match iter.next() {
+                Some(possible_num) => match possible_num.parse() {
+                    Ok(num) => num,
+                    Err(e) => {
+                        eprintln!("Conversion error: {}", e);
+                        return Command::Empty;
+                    }
+                },
+                None => {
+                    eprintln!("Couldn't parse type for list");
+                    return Command::Empty;
+                }
+            },
+        ),
+        "-a" => Command::Add(iter),
+        "-e" => Command::Edit(iter),
+        _ => Command::Empty,
+    }
+}*/
