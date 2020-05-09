@@ -2,6 +2,7 @@ use std::fmt;
 
 #[derive(Clone, Debug)]
 pub struct Transaction {
+    id: usize,
     date: String,
     amount: f32,
     account: String,
@@ -11,6 +12,7 @@ pub struct Transaction {
 
 impl Transaction {
     pub fn new(
+        id: usize,
         possible_date: Option<&str>,
         possible_amount: Option<&str>,
         possible_account: Option<&str>,
@@ -18,6 +20,7 @@ impl Transaction {
         possible_description: Option<&str>,
     ) -> Transaction {
         Transaction {
+            id,
             date: match possible_date {
                 Some(datetime) => String::from(datetime),
                 None => String::new(),
@@ -49,8 +52,8 @@ impl fmt::Display for Transaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "{}\t{}\t\t{}\t\t{}\t\t{}",
-            self.date, self.amount, self.account, self.category, self.description
+            "{},\t{}\t{}\t\t{}\t\t{}\t\t{}",
+            self.id, self.date, self.amount, self.account, self.category, self.description
         )
     }
 }

@@ -1,13 +1,15 @@
 use std::fmt;
 #[derive(Clone, Debug)]
 pub struct Account {
+    id: usize,
     name: String,
     value: f32,
 }
 
 impl Account {
-    pub fn new(possible_name: Option<&str>, possible_value: Option<&str>) -> Account {
+    pub fn new(id: usize, possible_name: Option<&str>, possible_value: Option<&str>) -> Account {
         Account {
+            id,
             name: match possible_name {
                 Some(name) => String::from(name),
                 None => String::new(),
@@ -25,6 +27,6 @@ impl Account {
 
 impl fmt::Display for Account {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}\t\t{}", self.name, self.value)
+        write!(f, "{},\t{}\t\t{}", self.id, self.name, self.value)
     }
 }

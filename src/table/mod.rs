@@ -24,28 +24,48 @@ impl Table {
     pub fn build_accounts(&mut self, contents: String) {
         let mut accounts: Vec<Account> = Vec::new();
         for line in contents.split("\n") {
+            if line.is_empty() {
+                break;
+            }
             let mut cells = line.split(",");
-            accounts.push(Account::new(cells.next(), cells.next()));
+            let id = match accounts.is_empty() {
+                true => 0,
+                false => accounts.len(),
+            };
+            accounts.push(Account::new(id, cells.next(), cells.next()));
         }
-        accounts.remove(accounts.len() - 1);
         self.accounts = accounts;
     }
 
     pub fn build_categories(&mut self, contents: String) {
         let mut categories: Vec<Category> = Vec::new();
         for line in contents.split("\n") {
+            if line.is_empty() {
+                break;
+            }
             let mut cells = line.split(",");
-            categories.push(Category::new(cells.next(), cells.next(), cells.next()));
+            let id = match categories.is_empty() {
+                true => 0,
+                false => categories.len(),
+            };
+            categories.push(Category::new(id, cells.next(), cells.next(), cells.next()));
         }
-        categories.remove(categories.len() - 1);
         self.categories = categories;
     }
 
     pub fn build_transactions(&mut self, contents: String) {
         let mut transactions: Vec<Transaction> = Vec::new();
         for line in contents.split("\n") {
+            if line.is_empty() {
+                break;
+            }
             let mut cells = line.split(",");
+            let id = match transactions.is_empty() {
+                true => 0,
+                false => transactions.len(),
+            };
             transactions.push(Transaction::new(
+                id,
                 cells.next(),
                 cells.next(),
                 cells.next(),
@@ -53,25 +73,30 @@ impl Table {
                 cells.next(),
             ));
         }
-        transactions.remove(transactions.len() - 1);
         self.transactions = transactions;
     }
 
     pub fn display(&self, table: &str) {
         match table {
             "accounts" => {
+                println!("===== ACCOUNTS =====");
+                println!();
                 for acc in self.accounts.as_slice() {
                     println!("{}", acc);
                 }
                 println!();
             }
             "categories" => {
+                println!("===== CATEGORIES =====");
+                println!();
                 for cat in self.categories.as_slice() {
                     println!("{}", cat);
                 }
                 println!();
             }
             "transactions" => {
+                println!("===== TRANSACTIONS =====");
+                println!();
                 for tran in self.transactions.as_slice() {
                     println!("{}", tran);
                 }
