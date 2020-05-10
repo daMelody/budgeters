@@ -1,5 +1,7 @@
 use home; // for the home_dir function
 use std::fs::{self, ReadDir};
+use std::io::{self, prelude::*};
+use std::iter::Iterator;
 use std::path::{Path, PathBuf};
 use std::str;
 
@@ -34,10 +36,22 @@ pub fn setup(sub_dir: String) -> Table {
     }
 }
 
-pub fn run(data: &mut Table) {
-    data.display("accounts");
-    data.display("categories");
-    data.display("transactions");
+// COMMANDS
+pub fn run(table: &mut Table) {
+    let command = prompt();
+    loop {
+        match command {
+            Command::Cancel => break,
+            Command::Quit => break, // TODO: save the Table
+            Command::Empty => continue,
+            Command::Add(args) => continue,  // TODO: table.add(args)
+            Command::Edit(args) => continue, // TODO: table.edit(args)
+            Command::Delete(args) => continue, // TODO: table.delete(args)
+            Command::Search(args) => continue, // TODO: table.search(args)
+            Command::List(args) => Table::list(table, args),
+            Command::RollOver(args) => continue, // TODO: table.rollover(args)
+        }
+    }
 }
 
 fn get_dir_path(dir_name: String) -> String {
@@ -84,94 +98,46 @@ fn parse_file(new_table: &mut Table, contents: String, filename: PathBuf) {
     }
 }
 
-/* getting the commands
-
-enum Command<'a> {
+// getting the commands
+enum Command {
     Empty,
-    List(String),
-    Search(String, u32),
-    Delete(String, u32),
-    Add(str::SplitWhitespace<'a>),
-    Edit(str::SplitWhitespace<'a>),
+    Cancel,
+    Quit,
+    List(Vec<String>),
+    Add(Vec<String>),
+    Edit(Vec<String>),
+    Delete(Vec<String>),
+    Search(Vec<String>),
+    RollOver(Vec<String>),
 }
 
-fn prompt<'a>() -> Command<'a> {
+fn prompt() -> Command {
     print!("$: ");
     io::stdout().flush().unwrap();
     let mut buffer = String::new();
     match io::stdin().read_line(&mut buffer) {
         Ok(u) => u,
         Err(e) => {
-            eprintln!("Error reading command: {}", e);
-            return Command::Empty;
+            panic!("Error getting command: {}", e);
         }
     };
-    parse_command(buffer)
-}
-
-fn parse_command<'a>(buffer: String) -> Command<'a> {
-    let mut iter = buffer.split_whitespace();
-    let command = match iter.next() {
+    let mut inputs: Vec<String> = Vec::new();
+    for word in buffer.split_whitespace() {
+        inputs.push(String::from(word));
+    }
+    let command = match inputs.get(0) {
         Some(st) => st,
-        None => {
-            eprintln!("There was no command to parse");
-            return Command::Empty;
-        }
+        None => "",
     };
     match command {
-        "-l" => Command::List(match iter.next() {
-            Some(table_type) => String::from(table_type),
-            None => {
-                eprintln!("Couldn't parse type for list");
-                return Command::Empty;
-            }
-        }),
-        "-s" => Command::Search(
-            match iter.next() {
-                Some(table_type) => String::from(table_type),
-                None => {
-                    eprintln!("Couldn't parse type for list");
-                    return Command::Empty;
-                }
-            },
-            match iter.next() {
-                Some(possible_num) => match possible_num.parse() {
-                    Ok(num) => num,
-                    Err(e) => {
-                        eprintln!("Conversion error: {}", e);
-                        return Command::Empty;
-                    }
-                },
-                None => {
-                    eprintln!("Couldn't parse type for list");
-                    return Command::Empty;
-                }
-            },
-        ),
-        "-d" => Command::Delete(
-            match iter.next() {
-                Some(table_type) => String::from(table_type),
-                None => {
-                    eprintln!("Couldn't parse type for list");
-                    return Command::Empty;
-                }
-            },
-            match iter.next() {
-                Some(possible_num) => match possible_num.parse() {
-                    Ok(num) => num,
-                    Err(e) => {
-                        eprintln!("Conversion error: {}", e);
-                        return Command::Empty;
-                    }
-                },
-                None => {
-                    eprintln!("Couldn't parse type for list");
-                    return Command::Empty;
-                }
-            },
-        ),
-        "-a" => Command::Add(iter),
-        "-e" => Command::Edit(iter),
+        "-c" => Command::Cancel,
+        "-q" => Command::Quit,
+        "-l" => Command::List(inputs),
+        "-a" => Command::Add(inputs),
+        "-e" => Command::Edit(inputs),
+        "-d" => Command::Delete(inputs),
+        "-s" => Command::Search(inputs),
+        "-r" => Command::RollOver(inputs),
         _ => Command::Empty,
     }
-}*/
+}
