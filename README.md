@@ -5,9 +5,9 @@ a terminal-based app for managing your personal finances
 # structure
 
 built from three "tables"
--- Account, made of one or more of the <Account> type
--- Category, made of one or more of the <Category> type
--- Transaction, made of one or more of the <Transaction> type
+-- Account (acc), made of one or more of the <Account> type
+-- Category (cat), made of one or more of the <Category> type
+-- Transaction (tra), made of one or more of the <Transaction> type
     * NOTE: can also have <Transfer> type to represent passing between your own <Accounts>
 
 # commands
