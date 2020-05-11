@@ -12,9 +12,11 @@ built from three "tables"
 
 # commands
 
--a <type>: add an <Account>, <Category>, <Transaction>, or <Transfer>
--e <type> <id> : edit the <type> entry according to the <id>
--d <type> <id> : delete the <type> entry according to the <id>
-    * NOTE: if <type> is <Account>/<Category>, any <Transaction> or <Transfer> will still show that entry
--l <type> : list the table for one type
--s <string>: search Transaction table by the <string>
+a <type> : add an <Account>, <Category>, <Transaction>
+e <type> : initiate edit method for <type>
+d <type> : initiate delete script for<type>
+    * NOTE: if <type> is <Account>/<Category>, any <Transaction> will still show that entry
+l <type> : list the table for the <type>
+s <string> : search Transaction table by the <string>
+q : quits the app and saves the files into the correct subdirectory
+--cancel : quits the app and does not save any updates
