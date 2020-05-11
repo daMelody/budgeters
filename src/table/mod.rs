@@ -156,7 +156,7 @@ impl Table {
         if arg == &Table::table_types[0] {
             table.accounts.push(Account::add(&table.accounts));
         } else if arg == &Table::table_types[1] {
-            table.categories.push(Category::add());
+            table.categories.push(Category::add(&table.categories));
         } else {
             table.transactions.push(Transaction::add());
         }
