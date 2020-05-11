@@ -1,3 +1,4 @@
+use crate::cli;
 use std::fmt;
 
 #[derive(Clone, Debug)]
@@ -25,7 +26,18 @@ impl Account {
         }
     }
 
-    pub fn add() -> Account {}
+    pub fn add(accounts: &Vec<Account>) -> Account {
+        let id = match accounts.is_empty() {
+            true => 0,
+            false => accounts.len(),
+        };
+        let name = cli::get("Name");
+        Account {
+            id,
+            name: String::from(name),
+            value: 0.0,
+        }
+    }
 }
 
 impl fmt::Display for Account {
