@@ -7,6 +7,8 @@ use std::str;
 
 mod table; // bringing table module into scope
 use table::Table; // import Table struct for use
+mod cli;
+use cli::Command;
 
 pub fn get_dir_name(mut args: std::env::Args) -> Result<String, &'static str> {
     args.next(); // advance iterator the the first item
@@ -40,7 +42,7 @@ pub fn setup(sub_dir: String) -> Table {
 pub fn run(table: &mut Table) {
     let command = prompt();
     loop {
-        match command {
+        match cli::prompt() {
             Command::Cancel => break,
             Command::Quit => break, // TODO: save the Table
             Command::Empty => continue,
