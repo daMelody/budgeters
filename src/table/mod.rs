@@ -12,7 +12,7 @@ pub struct Table {
     pub transactions: Vec<Transaction>,
 }
 
-enum TableType {
+pub enum TableType {
     Account,
     Category,
     Transaction,
@@ -117,35 +117,54 @@ impl Table {
             }
             _ => (),
         }
-
-        // for matching CLI input
-        const ACCOUNT: String = String::from("acc");
-        const CATEGORY: String = String::from("cat");
-        let TRANSACTION: String = String::from("tra");
-
-        pub fn list(table: &Table, args: &Vec<String>) {
-            // expect args to have have a type argument
-            if args.len() != 2 {
-                return;
-            }
-            let table_type = match args.get(1) {
-                Some(st) => st,
-                None => return,
-            };
-            let account = String::from("acc");
-            let category = String::from("cat");
-            let transaction = String::from("tra");
-            match table_type {
-                &account => table.display(TableType::Account),
-                &category => table.display(TableType::Category),
-                &transaction => table.display(TableType::Transaction),
-            };
-        }
-
-        pub fn add(args: &Vec<String>) {}
-        pub fn edit(args: &Vec<String>) {}
-
-        pub fn search(args: &Vec<String>) {}
-        pub fn delete(args: &Vec<String>) {}
     }
+
+    /// returns an array of String corresponding to the three TableTypes
+    const table_types: [String; 3] = [
+        String::from("acc"),
+        String::from("cat"),
+        String::from("tra"),
+    ];
+
+    pub fn list(table: &Table, arg: &String) {
+        // expect args to have a type argument
+        if arg.is_empty() {
+            return;
+        }
+        if arg == &Table::table_types[0] {
+            Table::display(table, TableType::Account);
+        } else if arg == &Table::table_types[1] {
+            Table::display(table, TableType::Category);
+        } else {
+            Table::display(table, TableType::Transaction);
+        }
+    }
+
+    pub fn search(table: &Table, arg: &String) {
+        // expect args to have a type argument
+        if arg.is_empty() {
+            return;
+        }
+    }
+
+    /* require mutable Table */
+
+    pub fn add(table: &mut Table, arg: &String) {
+        if arg.is_empty() {
+            return;
+        }
+        if arg == &Table::table_types[0] {
+            table.accounts.push(Account::add());
+        } else if arg == &Table::table_types[1] {
+            table.categories.push(Category::add());
+        } else {
+            table.transactions.push(Transaction::add());
+        }
+    }
+
+    pub fn edit(table: &mut Table, arg: &String) {}
+    pub fn delete(table: &mut Table, arg: &String) {}
+
+    // * this is a future thing
+    pub fn roll(table: &mut Table, arg: &String) {}
 }
