@@ -46,6 +46,8 @@ impl Transaction {
             },
         }
     }
+
+    pub fn add() -> Transaction {}
 }
 
 impl fmt::Display for Transaction {

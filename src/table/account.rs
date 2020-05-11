@@ -1,4 +1,5 @@
 use std::fmt;
+
 #[derive(Clone, Debug)]
 pub struct Account {
     id: usize,
@@ -23,6 +24,8 @@ impl Account {
             },
         }
     }
+
+    pub fn add() -> Account {}
 }
 
 impl fmt::Display for Account {

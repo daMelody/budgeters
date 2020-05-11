@@ -36,6 +36,8 @@ impl Category {
             },
         }
     }
+
+    pub fn add() -> Category {}
 }
 
 impl fmt::Display for Category {
