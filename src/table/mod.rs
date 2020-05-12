@@ -115,27 +115,22 @@ impl Table {
                 }
                 println!();
             }
-            _ => (),
         }
     }
 
     /// returns an array of String corresponding to the three TableTypes
-    const table_types: [String; 3] = [
-        String::from("acc"),
-        String::from("cat"),
-        String::from("tra"),
-    ];
+    const TABLE_TYPES: [&'static str; 3] = ["acc", "cat", "tra"];
 
     pub fn list(table: &Table, arg: &String) {
         // expect args to have a type argument
         if arg.is_empty() {
             return;
         }
-        if arg == &Table::table_types[0] {
+        if arg == &Table::TABLE_TYPES[0] {
             Table::display(table, TableType::Account);
-        } else if arg == &Table::table_types[1] {
+        } else if arg == &Table::TABLE_TYPES[1] {
             Table::display(table, TableType::Category);
-        } else {
+        } else if arg == &Table::TABLE_TYPES[2] {
             Table::display(table, TableType::Transaction);
         }
     }
