@@ -33,7 +33,7 @@ pub fn prompt() -> Command {
         "a" => Command::Add(types),
         "e" => Command::Edit(types),
         "d" => Command::Delete(types),
-        "s" => Command::Search(types),
+        "/" => Command::Search(types),
         "r" => Command::RollOver(types),
         _ => Command::Empty,
     }

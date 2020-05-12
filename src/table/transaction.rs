@@ -71,13 +71,13 @@ impl Transaction {
     }
 
     pub fn search(table: &Table, arg: &String) {
+        println!("===== Search Results =====");
         for tra in table.transactions.iter() {
             if tra.date.contains(arg)
                 || tra.account.contains(arg)
                 || tra.category.contains(arg)
                 || tra.description.contains(arg)
             {
-                println!("===== Search Results =====");
                 println!("{}", tra);
             }
         }
