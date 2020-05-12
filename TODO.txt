@@ -2,3 +2,8 @@
 ! refine Display for Account, Category, Transaction
 * use UUID for <type> IDs (instead of using the Vector index)
 ? explore crates.io for Date functionality
+? consider using JSON or TOML in future
+
+TODO: change s to /
+TODO: add a sorting functionality for Transaction -> s
+TODO: prompt for year/month after spinning up run()
