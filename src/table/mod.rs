@@ -153,12 +153,12 @@ impl Table {
         if arg.is_empty() {
             return;
         }
-        if arg == &Table::table_types[0] {
-            table.accounts.push(Account::add(&table.accounts));
-        } else if arg == &Table::table_types[1] {
-            table.categories.push(Category::add(&table.categories));
-        } else {
-            table.transactions.push(Transaction::add());
+        if arg == &Table::TABLE_TYPES[0] {
+            table.accounts.push(Account::add(&table));
+        } else if arg == &Table::TABLE_TYPES[1] {
+            table.categories.push(Category::add(&table));
+        } else if arg == &Table::TABLE_TYPES[2] {
+            table.transactions.push(Transaction::add(&table));
         }
     }
 

@@ -1,3 +1,5 @@
+use crate::cli;
+use crate::table::Table;
 use std::fmt;
 
 #[derive(Clone, Debug)]
@@ -47,7 +49,32 @@ impl Transaction {
         }
     }
 
-    pub fn add() -> Transaction {}
+    pub fn add(table: &Table) -> Transaction {
+        let id = match table.transactions.is_empty() {
+            true => 0,
+            false => table.transactions.len(),
+        };
+        let date = cli::get("Date"); // TODO: use some Date object
+        let amount: f32 = match cli::get("Amount: ").parse() {
+            Ok(num) => num,
+            Err(e) => {
+                eprintln!("Error converting Amount value: {}", e);
+                eprintln!("Substituting 0.0, edit if not satisfactory");
+                0.0
+            }
+        };
+        let account = cli::get("Account: "); //TODO: compare with Account names
+        let category = cli::get("Category: "); //TODO: compare with Category names
+        let description = cli::get("Description: ");
+        Transaction {
+            id,
+            date,
+            amount,
+            account,
+            category,
+            description,
+        }
+    }
 }
 
 impl fmt::Display for Transaction {
