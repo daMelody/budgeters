@@ -1,2 +1,4 @@
 ? explore possibility of using tui-rs
 ! refine Display for Account, Category, Transaction
+* use UUID for <type> IDs (instead of using the Vector index)
+? explore crates.io for Date functionality
