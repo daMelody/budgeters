@@ -45,15 +45,9 @@ impl Category {
             true => 0,
             false => table.categories.len(),
         };
-        let name = cli::get("Name");
-        let expected: f32 = match cli::get("Expected").parse() {
-            Ok(num) => num,
-            Err(e) => {
-                eprintln!("Error converting Expected value: {}", e);
-                eprintln!("Substituting 0.0, edit if not satisfactory");
-                0.0
-            }
-        };
+        let name = cli::get_input("Name");
+        let mut possible_expected = cli::get_input("Expected");
+        let expected = cli::try_into_money(&mut possible_expected);
         Category {
             id,
             name,

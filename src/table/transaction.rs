@@ -54,18 +54,12 @@ impl Transaction {
             true => 0,
             false => table.transactions.len(),
         };
-        let date = cli::get("Date"); // TODO: use some Date object
-        let amount: f32 = match cli::get("Amount: ").parse() {
-            Ok(num) => num,
-            Err(e) => {
-                eprintln!("Error converting Amount value: {}", e);
-                eprintln!("Substituting 0.0, edit if not satisfactory");
-                0.0
-            }
-        };
-        let account = cli::get("Account: "); //TODO: compare with Account names
-        let category = cli::get("Category: "); //TODO: compare with Category names
-        let description = cli::get("Description: ");
+        let date = cli::get_input("Date"); // TODO: use some Date object
+        let mut possible_amount = cli::get_input("Amount: ");
+        let amount = cli::try_into_money(&mut possible_amount);
+        let account = cli::get_input("Account"); //TODO: compare with Account names
+        let category = cli::get_input("Category"); //TODO: compare with Category names
+        let description = cli::get_input("Description");
         Transaction {
             id,
             date,

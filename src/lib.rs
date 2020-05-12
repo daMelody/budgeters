@@ -4,8 +4,8 @@ use std::iter::Iterator;
 use std::path::{Path, PathBuf};
 use std::str;
 
-mod table; // bringing table module into scope
-use table::Table; // import Table struct for use
+mod table;
+use table::Table;
 mod cli;
 use cli::Command;
 

@@ -15,7 +15,7 @@ pub enum Command {
 
 pub fn prompt() -> Command {
     let mut inputs: Vec<String> = Vec::new();
-    for word in get("$").split_whitespace() {
+    for word in get_input("$").split_whitespace() {
         inputs.push(String::from(word));
     }
     let command = match inputs.get(0) {
@@ -39,7 +39,7 @@ pub fn prompt() -> Command {
     }
 }
 
-pub fn get(arg: &str) -> String {
+pub fn get_input(arg: &str) -> String {
     print!("{}: ", arg);
     io::stdout().flush().unwrap();
     let mut buffer = String::new();
@@ -50,5 +50,23 @@ pub fn get(arg: &str) -> String {
             return String::new();
         }
     };
-    String::from(buffer)
+    String::from(buffer.trim())
+}
+
+pub fn try_into_money(possible_num: &mut String) -> f32 {
+    match possible_num.parse() {
+        Ok(num) => num,
+        Err(_) => {
+            possible_num.push_str(".0");
+            println!("{}", possible_num);
+            match possible_num.parse() {
+                Ok(num) => num,
+                Err(e) => {
+                    eprintln!("Error converting Expected value: {}", e);
+                    eprintln!("Substituting 0.0, edit if not satisfactory");
+                    0.0
+                }
+            }
+        }
+    }
 }

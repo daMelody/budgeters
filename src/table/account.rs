@@ -32,7 +32,7 @@ impl Account {
             true => 0,
             false => table.accounts.len(),
         };
-        let name = cli::get("Name");
+        let name = cli::get_input("Name");
         Account {
             id,
             name,
