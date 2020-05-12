@@ -1,4 +1,5 @@
 use crate::cli;
+use crate::table::Table;
 use std::fmt;
 
 #[derive(Clone, Debug)]
@@ -26,15 +27,15 @@ impl Account {
         }
     }
 
-    pub fn add(accounts: &Vec<Account>) -> Account {
-        let id = match accounts.is_empty() {
+    pub fn add(table: &Table) -> Account {
+        let id = match table.accounts.is_empty() {
             true => 0,
-            false => accounts.len(),
+            false => table.accounts.len(),
         };
         let name = cli::get("Name");
         Account {
             id,
-            name: String::from(name),
+            name,
             value: 0.0,
         }
     }

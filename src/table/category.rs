@@ -1,4 +1,5 @@
 use crate::cli;
+use crate::table::Table;
 use std::fmt;
 
 #[derive(Debug, Clone)]
@@ -39,23 +40,23 @@ impl Category {
         }
     }
 
-    pub fn add(categories: &Vec<Category>) -> Category {
-        let id = match categories.is_empty() {
+    pub fn add(table: &Table) -> Category {
+        let id = match table.categories.is_empty() {
             true => 0,
-            false => categories.len(),
+            false => table.categories.len(),
         };
         let name = cli::get("Name");
         let expected: f32 = match cli::get("Expected").parse() {
             Ok(num) => num,
             Err(e) => {
                 eprintln!("Error converting Expected value: {}", e);
-                eprintln!("Substituting 0.0, delete and try again if not satisfactory");
+                eprintln!("Substituting 0.0, edit if not satisfactory");
                 0.0
             }
         };
         Category {
             id,
-            name: String::from(name),
+            name,
             expected,
             actual: 0.0,
         }

@@ -39,16 +39,16 @@ pub fn prompt() -> Command {
     }
 }
 
-pub fn get(arg: &str) -> &str {
+pub fn get(arg: &str) -> String {
     print!("{}: ", arg);
     io::stdout().flush().unwrap();
-    let buffer = String::new();
+    let mut buffer = String::new();
     match io::stdin().read_line(&mut buffer) {
         Ok(u) => u,
         Err(e) => {
             eprintln!("Error getting input: {}", e);
-            return "";
+            return String::new();
         }
     };
-    &buffer
+    String::from(buffer)
 }
