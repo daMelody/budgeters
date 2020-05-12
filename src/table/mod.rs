@@ -94,7 +94,7 @@ impl Table {
             TableType::Account => {
                 println!("===== ACCOUNTS =====");
                 println!();
-                for acc in self.accounts.as_slice() {
+                for acc in self.accounts.iter() {
                     println!("{}", acc);
                 }
                 println!();
@@ -102,7 +102,7 @@ impl Table {
             TableType::Category => {
                 println!("===== CATEGORIES =====");
                 println!();
-                for cat in self.categories.as_slice() {
+                for cat in self.categories.iter() {
                     println!("{}", cat);
                 }
                 println!();
@@ -110,7 +110,7 @@ impl Table {
             TableType::Transaction => {
                 println!("===== TRANSACTIONS =====");
                 println!();
-                for tran in self.transactions.as_slice() {
+                for tran in self.transactions.iter() {
                     println!("{}", tran);
                 }
                 println!();
@@ -140,6 +140,7 @@ impl Table {
         if arg.is_empty() {
             return;
         }
+        Transaction::search(&table, arg);
     }
 
     /* require mutable Table */

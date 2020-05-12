@@ -69,6 +69,19 @@ impl Transaction {
             description,
         }
     }
+
+    pub fn search(table: &Table, arg: &String) {
+        for tra in table.transactions.iter() {
+            if tra.date.contains(arg)
+                || tra.account.contains(arg)
+                || tra.category.contains(arg)
+                || tra.description.contains(arg)
+            {
+                println!("===== Search Results =====");
+                println!("{}", tra);
+            }
+        }
+    }
 }
 
 impl fmt::Display for Transaction {
