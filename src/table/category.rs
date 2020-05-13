@@ -1,24 +1,23 @@
 use crate::cli;
-use crate::table::Table;
 use std::fmt;
+use uuid::Uuid;
 
 #[derive(Debug, Clone)]
 pub struct Category {
-    id: usize,
+    id: Uuid,
     name: String,
     expected: f32,
     actual: f32,
 }
 
 impl Category {
-    pub fn new(
-        id: usize,
+    pub fn build(
         possible_name: Option<&str>,
         possible_expected: Option<&str>,
         possible_actual: Option<&str>,
     ) -> Category {
         Category {
-            id,
+            id: Uuid::new_v4(),
             name: match possible_name {
                 Some(name) => String::from(name),
                 None => String::new(),
@@ -40,16 +39,12 @@ impl Category {
         }
     }
 
-    pub fn add(table: &Table) -> Category {
-        let id = match table.categories.is_empty() {
-            true => 0,
-            false => table.categories.len(),
-        };
+    pub fn new() -> Category {
         let name = cli::get_input("Name");
         let mut possible_expected = cli::get_input("Expected");
         let expected = cli::try_into_money(&mut possible_expected);
         Category {
-            id,
+            id: Uuid::new_v4(),
             name,
             expected,
             actual: 0.0,

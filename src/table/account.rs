@@ -1,18 +1,18 @@
 use crate::cli;
-use crate::table::Table;
 use std::fmt;
+use uuid::Uuid;
 
 #[derive(Clone, Debug)]
 pub struct Account {
-    id: usize,
+    id: Uuid,
     name: String,
     value: f32,
 }
 
 impl Account {
-    pub fn new(id: usize, possible_name: Option<&str>, possible_value: Option<&str>) -> Account {
+    pub fn build(possible_name: Option<&str>, possible_value: Option<&str>) -> Account {
         Account {
-            id,
+            id: Uuid::new_v4(),
             name: match possible_name {
                 Some(name) => String::from(name),
                 None => String::new(),
@@ -27,14 +27,10 @@ impl Account {
         }
     }
 
-    pub fn add(table: &Table) -> Account {
-        let id = match table.accounts.is_empty() {
-            true => 0,
-            false => table.accounts.len(),
-        };
+    pub fn new() -> Account {
         let name = cli::get_input("Name");
         Account {
-            id,
+            id: Uuid::new_v4(),
             name,
             value: 0.0,
         }

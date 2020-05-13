@@ -37,11 +37,7 @@ impl Table {
                 break;
             }
             let mut cells = line.split(",");
-            let id = match accounts.is_empty() {
-                true => 0,
-                false => accounts.len(),
-            };
-            accounts.push(Account::new(id, cells.next(), cells.next()));
+            accounts.push(Account::build(cells.next(), cells.next()));
         }
         self.accounts = accounts;
     }
@@ -55,11 +51,7 @@ impl Table {
                 break;
             }
             let mut cells = line.split(",");
-            let id = match categories.is_empty() {
-                true => 0,
-                false => categories.len(),
-            };
-            categories.push(Category::new(id, cells.next(), cells.next(), cells.next()));
+            categories.push(Category::build(cells.next(), cells.next(), cells.next()));
         }
         self.categories = categories;
     }
@@ -73,12 +65,7 @@ impl Table {
                 break;
             }
             let mut cells = line.split(",");
-            let id = match transactions.is_empty() {
-                true => 0,
-                false => transactions.len(),
-            };
-            transactions.push(Transaction::new(
-                id,
+            transactions.push(Transaction::build(
                 cells.next(),
                 cells.next(),
                 cells.next(),
@@ -140,7 +127,7 @@ impl Table {
         if arg.is_empty() {
             return;
         }
-        Transaction::search(&table, arg);
+        Transaction::search(&table.transactions, arg);
     }
 
     /* require mutable Table */
@@ -150,17 +137,17 @@ impl Table {
             return;
         }
         if arg == &Table::TABLE_TYPES[0] {
-            table.accounts.push(Account::add(&table));
+            table.accounts.push(Account::new());
         } else if arg == &Table::TABLE_TYPES[1] {
-            table.categories.push(Category::add(&table));
+            table.categories.push(Category::new());
         } else if arg == &Table::TABLE_TYPES[2] {
-            table.transactions.push(Transaction::add(&table));
+            table.transactions.push(Transaction::new());
         }
     }
 
     pub fn edit(table: &mut Table, arg: &String) {}
     pub fn delete(table: &mut Table, arg: &String) {}
 
-    // * this is a future thing
+    // TODO:
     pub fn roll(table: &mut Table, arg: &String) {}
 }

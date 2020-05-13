@@ -1,10 +1,10 @@
 use crate::cli;
-use crate::table::Table;
 use std::fmt;
+use uuid::Uuid;
 
 #[derive(Clone, Debug)]
 pub struct Transaction {
-    id: usize,
+    id: Uuid,
     date: String,
     amount: f32,
     account: String,
@@ -13,8 +13,7 @@ pub struct Transaction {
 }
 
 impl Transaction {
-    pub fn new(
-        id: usize,
+    pub fn build(
         possible_date: Option<&str>,
         possible_amount: Option<&str>,
         possible_account: Option<&str>,
@@ -22,7 +21,7 @@ impl Transaction {
         possible_description: Option<&str>,
     ) -> Transaction {
         Transaction {
-            id,
+            id: Uuid::new_v4(),
             date: match possible_date {
                 Some(datetime) => String::from(datetime),
                 None => String::new(),
@@ -49,11 +48,7 @@ impl Transaction {
         }
     }
 
-    pub fn add(table: &Table) -> Transaction {
-        let id = match table.transactions.is_empty() {
-            true => 0,
-            false => table.transactions.len(),
-        };
+    pub fn new() -> Transaction {
         let date = cli::get_input("Date"); // TODO: use some Date object
         let mut possible_amount = cli::get_input("Amount: ");
         let amount = cli::try_into_money(&mut possible_amount);
@@ -61,7 +56,7 @@ impl Transaction {
         let category = cli::get_input("Category"); //TODO: compare with Category names
         let description = cli::get_input("Description");
         Transaction {
-            id,
+            id: Uuid::new_v4(),
             date,
             amount,
             account,
@@ -70,9 +65,9 @@ impl Transaction {
         }
     }
 
-    pub fn search(table: &Table, arg: &String) {
+    pub fn search(transactions: &Vec<Transaction>, arg: &String) {
         println!("===== Search Results =====");
-        for tra in table.transactions.iter() {
+        for tra in transactions.iter() {
             if tra.date.contains(arg)
                 || tra.account.contains(arg)
                 || tra.category.contains(arg)
