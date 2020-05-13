@@ -1,6 +1,6 @@
 use crate::cli;
 use std::fmt;
-use uuid::Uuid;
+use uuid::{adapter::Simple, Uuid};
 
 #[derive(Clone, Debug)]
 pub struct Transaction {
@@ -81,10 +81,13 @@ impl Transaction {
 
 impl fmt::Display for Transaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let id = Simple::from_uuid(self.id);
+        let mut id = id.to_string();
+        let (id_string, _extra) = id.split_at_mut(6);
         write!(
             f,
             "{},\t{}\t{}\t\t{}\t\t{}\t\t{}",
-            self.id, self.date, self.amount, self.account, self.category, self.description
+            id_string, self.date, self.amount, self.account, self.category, self.description
         )
     }
 }

@@ -1,6 +1,6 @@
 use crate::cli;
 use std::fmt;
-use uuid::Uuid;
+use uuid::{adapter::Simple, Uuid};
 
 #[derive(Debug, Clone)]
 pub struct Category {
@@ -54,10 +54,13 @@ impl Category {
 
 impl fmt::Display for Category {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let id = Simple::from_uuid(self.id);
+        let mut id = id.to_string();
+        let (id_string, _extra) = id.split_at_mut(6);
         write!(
             f,
             "{},\t{}\t\t{}\t\t{}",
-            self.id, self.name, self.expected, self.actual
+            id_string, self.name, self.expected, self.actual
         )
     }
 }

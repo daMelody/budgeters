@@ -1,6 +1,6 @@
 use crate::cli;
 use std::fmt;
-use uuid::Uuid;
+use uuid::{adapter::Simple, Uuid};
 
 #[derive(Clone, Debug)]
 pub struct Account {
@@ -39,6 +39,9 @@ impl Account {
 
 impl fmt::Display for Account {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{},\t{}\t\t{}", self.id, self.name, self.value)
+        let id = Simple::from_uuid(self.id);
+        let mut id = id.to_string();
+        let (id_string, _extra) = id.split_at_mut(6);
+        write!(f, "{},\t{}\t\t{}", id_string, self.name, self.value)
     }
 }
