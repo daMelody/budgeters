@@ -44,10 +44,10 @@ pub fn run(table: &mut Table) {
             Command::Cancel => break,
             Command::Quit => break, // TODO: save the Table
             Command::Empty => continue,
-            Command::Add(ref args) => Table::add(table, args), // TODO: table.add(args)
-            Command::Edit(ref args) => Table::edit(table, args), // TODO: table.edit(args)
-            Command::Delete(ref args) => Table::delete(table, args), // TODO: table.delete(args)
-            Command::Search(ref args) => Table::search(table, args), // TODO: table.search(args)
+            Command::Add(ref args) => Table::add(table, args),
+            Command::Edit(ref args) => Table::edit(table, args),
+            Command::Delete(ref args) => Table::delete(table, args),
+            Command::Search(ref args) => Table::search(table, args),
             Command::List(ref args) => Table::list(table, args),
             Command::RollOver(ref args) => Table::roll(table, args), // TODO: table.rollover(args)
         }

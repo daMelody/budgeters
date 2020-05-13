@@ -1,8 +1,8 @@
 # budgeters
 
-a terminal-based app for managing your personal finances
+A terminal-based app for managing your personal finances. Written in Rust
 
-# structure
+## structure
 
 built from three "tables"
 -- Account (acc), made of one or more of the <Account> type
@@ -10,7 +10,7 @@ built from three "tables"
 -- Transaction (tra), made of one or more of the <Transaction> type
     * NOTE: can also have <Transfer> type to represent passing between your own <Accounts>
 
-# commands
+## commands
 
 a <type> : add an <Account>, <Category>, <Transaction>
 e <type> : initiate edit method for <type>
