@@ -77,17 +77,55 @@ impl Transaction {
             }
         }
     }
+
+    pub fn find(transactions: &Vec<Transaction>) -> i32 {
+        let arg = cli::get_input("ID");
+        let mut index = 0;
+        for tra in transactions {
+            if tra.simplify_id().contains(&arg) {
+                return index;
+            }
+            index += 1;
+        }
+        -1
+    }
+
+    pub fn edit(&mut self) {
+        let field = cli::get_input("Field to edit");
+        if field == "date" {
+            self.date = cli::get_input("Date");
+        } else if field == "amount" {
+            self.amount = cli::try_into_money(&mut cli::get_input("Amount"));
+        } else if field == "account" {
+            self.account = cli::get_input("Account");
+        } else if field == "category" {
+            self.category = cli::get_input("Category");
+        } else if field == "description" {
+            self.description = cli::get_input("Description");
+        } else {
+            return;
+        }
+    }
+
+    fn simplify_id(&self) -> String {
+        let id = Simple::from_uuid(self.id);
+        let mut id = id.to_string();
+        let (id_string, _extra) = id.split_at_mut(6);
+        id_string.to_string()
+    }
 }
 
 impl fmt::Display for Transaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let id = Simple::from_uuid(self.id);
-        let mut id = id.to_string();
-        let (id_string, _extra) = id.split_at_mut(6);
         write!(
             f,
             "{},\t{}\t{}\t\t{}\t\t{}\t\t{}",
-            id_string, self.date, self.amount, self.account, self.category, self.description
+            self.simplify_id(),
+            self.date,
+            self.amount,
+            self.account,
+            self.category,
+            self.description
         )
     }
 }

@@ -65,14 +65,14 @@ impl Category {
 
     pub fn edit(&mut self) {
         let field = cli::get_input("Field to edit");
-        let name_field = String::from("name");
-        let expected_field = String::from("expected");
-        let actual_field = String::from("actual");
-        match field {
-            name_field => self.name = cli::get_input("Name"),
-            expected_field => self.expected = cli::try_into_money(&mut cli::get_input("Expected")),
-            actual_field => self.actual = cli::try_into_money(&mut cli::get_input("Actual")),
-            _ => (),
+        if field == "name" {
+            self.name = cli::get_input("Name");
+        } else if field == "expected" {
+            self.expected = cli::try_into_money(&mut cli::get_input("Expected"));
+        } else if field == "actual" {
+            self.actual = cli::try_into_money(&mut cli::get_input("Actual"));
+        } else {
+            return;
         }
     }
 

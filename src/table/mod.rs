@@ -76,6 +76,7 @@ impl Table {
         self.transactions = transactions;
     }
 
+    /// display the list of TableType
     pub fn display(&self, table: TableType) {
         match table {
             TableType::Account => {
@@ -145,8 +146,61 @@ impl Table {
         }
     }
 
-    pub fn edit(table: &mut Table, arg: &String) {}
-    pub fn delete(table: &mut Table, arg: &String) {}
+    pub fn edit(table: &mut Table, arg: &String) {
+        if arg.is_empty() {
+            return;
+        }
+        if arg == &Table::TABLE_TYPES[0] {
+            let index = Account::find(&table.accounts);
+            if index >= 0 {
+                if let Some(acc) = table.accounts.get_mut(index as usize) {
+                    println!("{}", acc);
+                    //TODO: do the editing
+                    Account::edit(acc);
+                }
+            }
+        } else if arg == &Table::TABLE_TYPES[1] {
+            let index = Category::find(&table.categories);
+            if index >= 0 {
+                if let Some(cat) = table.categories.get_mut(index as usize) {
+                    println!("{}", cat);
+                    //TODO: do the editing
+                    Category::edit(cat);
+                }
+            }
+        } else if arg == &Table::TABLE_TYPES[2] {
+            let index = Transaction::find(&table.transactions);
+            if index >= 0 {
+                if let Some(tra) = table.transactions.get_mut(index as usize) {
+                    println!("{}", tra);
+                    //TODO: do the editing
+                    Transaction::edit(tra);
+                }
+            }
+        }
+    }
+
+    pub fn delete(table: &mut Table, arg: &String) {
+        if arg.is_empty() {
+            return;
+        }
+        if arg == &Table::TABLE_TYPES[0] {
+            let index = Account::find(&table.accounts);
+            if index >= 0 {
+                table.accounts.remove(index as usize);
+            }
+        } else if arg == &Table::TABLE_TYPES[1] {
+            let index = Category::find(&table.categories);
+            if index >= 0 {
+                table.categories.remove(index as usize);
+            }
+        } else if arg == &Table::TABLE_TYPES[2] {
+            let index = Transaction::find(&table.transactions);
+            if index >= 0 {
+                table.transactions.remove(index as usize);
+            }
+        }
+    }
 
     // TODO:
     pub fn roll(table: &mut Table, arg: &String) {}

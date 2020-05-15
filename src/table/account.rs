@@ -50,12 +50,12 @@ impl Account {
 
     pub fn edit(&mut self) {
         let field = cli::get_input("Field to edit");
-        let name_field = String::from("name");
-        let value_field = String::from("value");
-        match field {
-            name_field => self.name = cli::get_input("Name"),
-            value_field => self.value = cli::try_into_money(&mut cli::get_input("Value")),
-            _ => (),
+        if field == "name" {
+            self.name = cli::get_input("Name")
+        } else if field == "value" {
+            self.value = cli::try_into_money(&mut cli::get_input("Value"));
+        } else {
+            return;
         }
     }
 
