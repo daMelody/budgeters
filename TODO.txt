@@ -4,4 +4,4 @@
 ? consider using JSON or TOML in future
 
 TODO: add a sorting functionality for Transaction -> s
-TODO: prompt for year/month after spinning up run()
+TODO: add multi word search for Transaction
