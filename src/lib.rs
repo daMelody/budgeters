@@ -1,34 +1,16 @@
 use home; // for the home_dir function
 use std::fs::{self, ReadDir};
-use std::iter::Iterator;
 use std::path::{Path, PathBuf};
-use std::str;
 
 mod table;
 use table::Table;
 mod cli;
 use cli::Command;
 
-pub fn get_dir_name(mut args: std::env::Args) -> Result<String, &'static str> {
-    args.next(); // advance iterator the the first item
-    let month = match args.next() {
-        Some(m) => m,
-        None => return Err("Didn't get a month"),
-    };
-    let mut year = match args.next() {
-        Some(y) => y,
-        None => return Err("Didn't get a year"),
-    };
-    year.push('/');
-    year.push_str(&month);
-    Ok(year)
-}
-
-pub fn setup(sub_dir: String) -> Table {
+fn setup() -> Table {
+    println!("Setting up...");
     let mut new_table = Table::new();
-    let mut dir_name = String::from("/budget_tracker/");
-    dir_name.push_str(&sub_dir);
-    match fs::read_dir(Path::new(&get_dir_path(dir_name))) {
+    match fs::read_dir(Path::new(&get_dir_path())) {
         Ok(files) => parse_dir(&mut new_table, files),
         Err(e) => {
             eprintln!("Error setting up: {}", e);
@@ -37,24 +19,44 @@ pub fn setup(sub_dir: String) -> Table {
     }
 }
 
-// COMMANDS
-pub fn run(table: &mut Table) {
+fn shutdown(table: &Table) {
+    println!("Shutting down...");
+    let root = get_dir_path();
+    // write out Accounts
+    let mut accounts = root.clone();
+    accounts.push_str("/Account.cls");
+    fs::write(Path::new(&accounts), table.to_cls(&accounts)).expect("Failed to save accounts.");
+    let mut categories = root.clone();
+    categories.push_str("/Category.cls");
+    fs::write(Path::new(&categories), table.to_cls(&categories))
+        .expect("Failed to save categories.");
+    let mut transactions = root.clone();
+    transactions.push_str("/Transaction.cls");
+    fs::write(Path::new(&transactions), table.to_cls(&transactions))
+        .expect("Failed to save transactions.");
+}
+
+pub fn run() {
+    let mut table = setup();
     loop {
         match cli::prompt() {
             Command::Cancel => break,
-            Command::Quit => break, // TODO: save the Table
+            Command::Quit => {
+                shutdown(&mut table);
+                break;
+            }
             Command::Empty => continue,
-            Command::Add(ref args) => Table::add(table, args),
-            Command::Edit(ref args) => Table::edit(table, args),
-            Command::Delete(ref args) => Table::delete(table, args),
-            Command::Search(ref args) => Table::search(table, args),
-            Command::List(ref args) => Table::list(table, args),
-            Command::RollOver(ref args) => Table::roll(table, args), // TODO: table.rollover(args)
+            Command::Add(ref args) => table.add(args),
+            Command::Edit(ref args) => table.edit(args),
+            Command::Delete(ref args) => table.delete(args),
+            Command::Search(ref args) => table.search(args),
+            Command::List(ref args) => table.list(args),
+            Command::RollOver(ref args) => table.roll(args), // TODO: table.rollover(args)
         }
     }
 }
 
-fn get_dir_path(dir_name: String) -> String {
+fn get_dir_path() -> String {
     let home = match home::home_dir() {
         Some(path) => path,
         None => panic!("Could not get home directory path"),
@@ -64,7 +66,11 @@ fn get_dir_path(dir_name: String) -> String {
         None => panic!("Could not convert home path to string"),
     };
     let mut root = String::from(home_str);
-    root.push_str(&dir_name);
+    root.push_str("/budget_tracker/");
+    root.push_str(&cli::get_input("year"));
+    root.push('/');
+    root.push_str(&cli::get_input("month"));
+    println!("{}", root); // ! DEBUG
     root
 }
 
@@ -94,6 +100,6 @@ fn parse_file(new_table: &mut Table, contents: String, filename: PathBuf) {
     } else if filename.ends_with("Transaction.cls") {
         new_table.build_transactions(contents);
     } else {
-        eprintln!("Unexpected filename");
+        eprintln!("Unexpected filename while parsing file");
     }
 }

@@ -82,6 +82,17 @@ impl Category {
         let (id_string, _extra) = id.split_at_mut(6);
         id_string.to_string()
     }
+
+    pub fn to_cls(&self) -> String {
+        let mut st = String::new();
+        st.push_str(&self.name);
+        st.push(',');
+        st.push_str(&self.expected.to_string());
+        st.push(',');
+        st.push_str(&self.actual.to_string());
+        st.push('\n');
+        st
+    }
 }
 
 impl fmt::Display for Category {

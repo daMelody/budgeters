@@ -109,99 +109,121 @@ impl Table {
     /// returns an array of String corresponding to the three TableTypes
     const TABLE_TYPES: [&'static str; 3] = ["acc", "cat", "tra"];
 
-    pub fn list(table: &Table, arg: &String) {
+    pub fn list(&self, arg: &String) {
         // expect args to have a type argument
         if arg.is_empty() {
             return;
         }
         if arg == &Table::TABLE_TYPES[0] {
-            Table::display(table, TableType::Account);
+            self.display(TableType::Account);
         } else if arg == &Table::TABLE_TYPES[1] {
-            Table::display(table, TableType::Category);
+            self.display(TableType::Category);
         } else if arg == &Table::TABLE_TYPES[2] {
-            Table::display(table, TableType::Transaction);
+            self.display(TableType::Transaction);
         }
     }
 
-    pub fn search(table: &Table, arg: &String) {
+    pub fn search(&self, arg: &String) {
         // expect args to have a type argument
         if arg.is_empty() {
             return;
         }
-        Transaction::search(&table.transactions, arg);
+        Transaction::search(&self.transactions, arg);
     }
 
     /* require mutable Table */
 
-    pub fn add(table: &mut Table, arg: &String) {
+    pub fn add(&mut self, arg: &String) {
         if arg.is_empty() {
             return;
         }
         if arg == &Table::TABLE_TYPES[0] {
-            table.accounts.push(Account::new());
+            self.accounts.push(Account::new());
         } else if arg == &Table::TABLE_TYPES[1] {
-            table.categories.push(Category::new());
+            self.categories.push(Category::new());
         } else if arg == &Table::TABLE_TYPES[2] {
-            table.transactions.push(Transaction::new());
+            self.transactions.push(Transaction::new());
         }
     }
 
-    pub fn edit(table: &mut Table, arg: &String) {
+    pub fn edit(&mut self, arg: &String) {
         if arg.is_empty() {
             return;
         }
         if arg == &Table::TABLE_TYPES[0] {
-            let index = Account::find(&table.accounts);
+            let index = Account::find(&self.accounts);
             if index >= 0 {
-                if let Some(acc) = table.accounts.get_mut(index as usize) {
+                if let Some(acc) = self.accounts.get_mut(index as usize) {
                     println!("{}", acc);
-                    //TODO: do the editing
-                    Account::edit(acc);
+                    acc.edit();
                 }
             }
         } else if arg == &Table::TABLE_TYPES[1] {
-            let index = Category::find(&table.categories);
+            let index = Category::find(&self.categories);
             if index >= 0 {
-                if let Some(cat) = table.categories.get_mut(index as usize) {
+                if let Some(cat) = self.categories.get_mut(index as usize) {
                     println!("{}", cat);
-                    //TODO: do the editing
-                    Category::edit(cat);
+                    cat.edit();
                 }
             }
         } else if arg == &Table::TABLE_TYPES[2] {
-            let index = Transaction::find(&table.transactions);
+            let index = Transaction::find(&self.transactions);
             if index >= 0 {
-                if let Some(tra) = table.transactions.get_mut(index as usize) {
+                if let Some(tra) = self.transactions.get_mut(index as usize) {
                     println!("{}", tra);
-                    //TODO: do the editing
-                    Transaction::edit(tra);
+                    tra.edit();
                 }
             }
         }
     }
 
-    pub fn delete(table: &mut Table, arg: &String) {
+    pub fn delete(&mut self, arg: &String) {
         if arg.is_empty() {
             return;
         }
         if arg == &Table::TABLE_TYPES[0] {
-            let index = Account::find(&table.accounts);
+            let index = Account::find(&self.accounts);
             if index >= 0 {
-                table.accounts.remove(index as usize);
+                self.accounts.remove(index as usize);
             }
         } else if arg == &Table::TABLE_TYPES[1] {
-            let index = Category::find(&table.categories);
+            let index = Category::find(&self.categories);
             if index >= 0 {
-                table.categories.remove(index as usize);
+                self.categories.remove(index as usize);
             }
         } else if arg == &Table::TABLE_TYPES[2] {
-            let index = Transaction::find(&table.transactions);
+            let index = Transaction::find(&self.transactions);
             if index >= 0 {
-                table.transactions.remove(index as usize);
+                self.transactions.remove(index as usize);
             }
         }
     }
 
     // TODO:
-    pub fn roll(table: &mut Table, arg: &String) {}
+    pub fn roll(&mut self, _arg: &String) {}
+
+    pub fn to_cls(&self, path: &String) -> String {
+        if path.ends_with("Account.cls") {
+            let mut accounts = String::new();
+            for acc in &self.accounts {
+                accounts.push_str(&Account::to_cls(acc));
+            }
+            accounts
+        } else if path.ends_with("Category.cls") {
+            let mut categories = String::new();
+            for cat in &self.categories {
+                categories.push_str(&Category::to_cls(cat));
+            }
+            categories
+        } else if path.ends_with("Transaction.cls") {
+            let mut transactions = String::new();
+            for tra in &self.transactions {
+                transactions.push_str(&Transaction::to_cls(tra));
+            }
+            transactions
+        } else {
+            eprintln!("Unexpected filename while writing to cls");
+            String::new()
+        }
+    }
 }

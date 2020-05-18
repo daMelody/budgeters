@@ -113,6 +113,21 @@ impl Transaction {
         let (id_string, _extra) = id.split_at_mut(6);
         id_string.to_string()
     }
+
+    pub fn to_cls(&self) -> String {
+        let mut st = String::new();
+        st.push_str(&self.date);
+        st.push(',');
+        st.push_str(&self.amount.to_string());
+        st.push(',');
+        st.push_str(&self.account);
+        st.push(',');
+        st.push_str(&self.category);
+        st.push(',');
+        st.push_str(&self.description);
+        st.push('\n');
+        st
+    }
 }
 
 impl fmt::Display for Transaction {

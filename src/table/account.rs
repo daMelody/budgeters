@@ -65,6 +65,15 @@ impl Account {
         let (id_string, _extra) = id.split_at_mut(6);
         id_string.to_string()
     }
+
+    pub fn to_cls(&self) -> String {
+        let mut st = String::new();
+        st.push_str(&self.name);
+        st.push(',');
+        st.push_str(&self.value.to_string());
+        st.push('\n');
+        st
+    }
 }
 
 impl fmt::Display for Account {
