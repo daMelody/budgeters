@@ -13,6 +13,18 @@ pub struct Transaction {
 }
 
 impl Transaction {
+    pub fn get_account(&self) -> &str {
+        &self.account
+    }
+
+    pub fn get_category(&self) -> &str {
+        &self.category
+    }
+
+    pub fn get_amount(&self) -> f32 {
+        self.amount
+    }
+
     pub fn build(
         possible_date: Option<&str>,
         possible_amount: Option<&str>,

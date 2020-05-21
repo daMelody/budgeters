@@ -45,6 +45,7 @@ pub fn run() {
                 shutdown(&mut table);
                 break;
             }
+            Command::Calculate => table.calculate(),
             Command::Empty => continue,
             Command::Add(ref args) => table.add(args),
             Command::Edit(ref args) => table.edit(args),
@@ -67,10 +68,10 @@ fn get_dir_path() -> String {
     };
     let mut root = String::from(home_str);
     root.push_str("/budget_tracker/");
-    root.push_str(&cli::get_input("year"));
+    root.push_str(&cli::get_input("Year"));
     root.push('/');
-    root.push_str(&cli::get_input("month"));
-    println!("{}", root); // ! DEBUG
+    root.push_str(&cli::get_input("Month"));
+    println!("{}", root); // * INFO
     root
 }
 

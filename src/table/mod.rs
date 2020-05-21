@@ -3,6 +3,7 @@ mod category;
 mod transaction;
 use account::Account;
 use category::Category;
+use std::collections::HashMap;
 use transaction::Transaction;
 
 #[derive(Clone, Debug)]
@@ -199,8 +200,77 @@ impl Table {
         }
     }
 
-    // TODO:
-    pub fn roll(&mut self, _arg: &String) {}
+    // ! is not complete, need to figure out the rounding to nearest penny
+    pub fn calculate(&mut self) {
+        let mut account_map: HashMap<&str, f32> = HashMap::new();
+        let mut category_map: HashMap<&str, f32> = HashMap::new();
+        // recalculate totals of Accounts and Categories
+        for tra in &self.transactions {
+            let tra_amount = tra.get_amount();
+            let acc_name = tra.get_account();
+            let acc_value = match account_map.get(acc_name) {
+                Some(last) => last + tra_amount,
+                None => tra_amount,
+            };
+            account_map.insert(acc_name, acc_value);
+            let cat_name = tra.get_category();
+            let cat_value = match category_map.get(cat_name) {
+                Some(last) => last + tra_amount,
+                None => tra_amount,
+            };
+            category_map.insert(cat_name, cat_value);
+        }
+        // iterate through Accounts and update Value fields
+        for acc in self.accounts.iter_mut() {
+            acc.set_value(*account_map.get(acc.get_name()).unwrap());
+        }
+        // iterate through Category and update Actual fields
+        for cat in self.categories.iter_mut() {
+            cat.set_actual(*category_map.get(cat.get_name()).unwrap());
+        }
+    }
+
+    /*
+    pub fn calculate(&mut self) {
+        let mut account_map: HashMap<&str, f32> = HashMap::new();
+        let mut category_map: HashMap<&str, f32> = HashMap::new();
+        for tra in &self.transactions {
+            match account_map.contains_key(tra.get_account()) {
+                true => {
+                    let tmp = tra.get_amount()
+                        + *account_map
+                            .get(tra.get_account())
+                            .expect("Account map failed");
+                    account_map.insert(tra.get_account(), tmp);
+                }
+                false => {
+                    println!("{}", tra.get_amount());
+                    account_map
+                        .insert(tra.get_account(), tra.get_amount())
+                        .expect("No value to insert into account_map");
+                    ()
+                }
+            }
+            match category_map.contains_key(tra.get_category()) {
+                true => {
+                    let tmp = tra.get_amount()
+                        + *category_map
+                            .get(tra.get_category())
+                            .expect("Category map failed");
+                    category_map.insert(tra.get_category(), tmp);
+                }
+                false => {
+                    category_map
+                        .insert(tra.get_category(), tra.get_amount())
+                        .expect("No value to insert into category_map");
+                }
+            }
+        }
+        println!("Accounts: {:?}", account_map);
+        println!("Categories: {:?}", category_map);
+    } */
+
+    pub fn roll(&mut self, _arg: &String) {} // TODO:
 
     pub fn to_cls(&self, path: &String) -> String {
         if path.ends_with("Account.cls") {

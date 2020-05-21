@@ -11,6 +11,14 @@ pub struct Category {
 }
 
 impl Category {
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
+
+    pub fn set_actual(&mut self, new_actual: f32) {
+        self.actual = new_actual;
+    }
+
     pub fn build(
         possible_name: Option<&str>,
         possible_expected: Option<&str>,

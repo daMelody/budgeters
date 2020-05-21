@@ -5,4 +5,4 @@
 
 TODO: add a sorting functionality for Transaction -> s
 TODO: add multi word search for Transaction
-! TODO: add the --calculate functionality
+! TODO: add the calculate functionality

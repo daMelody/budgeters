@@ -10,6 +10,14 @@ pub struct Account {
 }
 
 impl Account {
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
+
+    pub fn set_value(&mut self, new_value: f32) {
+        self.value = new_value;
+    }
+
     pub fn build(possible_name: Option<&str>, possible_value: Option<&str>) -> Account {
         Account {
             id: Uuid::new_v4(),
