@@ -200,8 +200,7 @@ impl Table {
         }
     }
 
-    // ! is not complete, need to figure out the rounding to nearest penny
-    pub fn calculate(&mut self) {
+    pub fn update(&mut self) {
         let mut account_map: HashMap<&str, f32> = HashMap::new();
         let mut category_map: HashMap<&str, f32> = HashMap::new();
         // recalculate totals of Accounts and Categories
@@ -222,53 +221,17 @@ impl Table {
         }
         // iterate through Accounts and update Value fields
         for acc in self.accounts.iter_mut() {
-            acc.set_value(*account_map.get(acc.get_name()).unwrap());
+            let rounded = (*account_map.get(acc.get_name()).unwrap() * 100.0).round() / 100.0;
+            acc.set_value(rounded);
         }
         // iterate through Category and update Actual fields
         for cat in self.categories.iter_mut() {
-            cat.set_actual(*category_map.get(cat.get_name()).unwrap());
+            let rounded = (*category_map.get(cat.get_name()).unwrap() * 100.0).round() / 100.0;
+            cat.set_actual(rounded);
         }
+        self.display(TableType::Account);
+        self.display(TableType::Category);
     }
-
-    /*
-    pub fn calculate(&mut self) {
-        let mut account_map: HashMap<&str, f32> = HashMap::new();
-        let mut category_map: HashMap<&str, f32> = HashMap::new();
-        for tra in &self.transactions {
-            match account_map.contains_key(tra.get_account()) {
-                true => {
-                    let tmp = tra.get_amount()
-                        + *account_map
-                            .get(tra.get_account())
-                            .expect("Account map failed");
-                    account_map.insert(tra.get_account(), tmp);
-                }
-                false => {
-                    println!("{}", tra.get_amount());
-                    account_map
-                        .insert(tra.get_account(), tra.get_amount())
-                        .expect("No value to insert into account_map");
-                    ()
-                }
-            }
-            match category_map.contains_key(tra.get_category()) {
-                true => {
-                    let tmp = tra.get_amount()
-                        + *category_map
-                            .get(tra.get_category())
-                            .expect("Category map failed");
-                    category_map.insert(tra.get_category(), tmp);
-                }
-                false => {
-                    category_map
-                        .insert(tra.get_category(), tra.get_amount())
-                        .expect("No value to insert into category_map");
-                }
-            }
-        }
-        println!("Accounts: {:?}", account_map);
-        println!("Categories: {:?}", category_map);
-    } */
 
     pub fn roll(&mut self, _arg: &String) {} // TODO:
 

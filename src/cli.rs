@@ -5,7 +5,7 @@ pub enum Command {
     Empty,
     Cancel,
     Quit,
-    Calculate,
+    Update,
     List(String),
     Add(String),
     Edit(String),
@@ -30,7 +30,7 @@ pub fn prompt() -> Command {
     match command {
         "--cancel" => Command::Cancel,
         "q" => Command::Quit,
-        "c" => Command::Calculate,
+        "--update" => Command::Update,
         "l" => Command::List(types),
         "a" => Command::Add(types),
         "e" => Command::Edit(types),

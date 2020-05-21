@@ -45,7 +45,7 @@ pub fn run() {
                 shutdown(&mut table);
                 break;
             }
-            Command::Calculate => table.calculate(),
+            Command::Update => table.update(),
             Command::Empty => continue,
             Command::Add(ref args) => table.add(args),
             Command::Edit(ref args) => table.edit(args),
