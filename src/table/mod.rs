@@ -38,7 +38,7 @@ impl Table {
                 break;
             }
             let mut cells = line.split(",");
-            accounts.push(Account::build(cells.next(), cells.next()));
+            accounts.push(Account::from_cls(cells.next(), cells.next()));
         }
         self.accounts = accounts;
     }
@@ -52,7 +52,7 @@ impl Table {
                 break;
             }
             let mut cells = line.split(",");
-            categories.push(Category::build(cells.next(), cells.next(), cells.next()));
+            categories.push(Category::from_cls(cells.next(), cells.next(), cells.next()));
         }
         self.categories = categories;
     }
@@ -66,7 +66,7 @@ impl Table {
                 break;
             }
             let mut cells = line.split(",");
-            transactions.push(Transaction::build(
+            transactions.push(Transaction::from_cls(
                 cells.next(),
                 cells.next(),
                 cells.next(),

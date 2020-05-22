@@ -1,11 +1,12 @@
 use crate::cli;
+use chrono::{DateTime, Utc};
 use std::fmt;
 use uuid::{adapter::Simple, Uuid};
 
 #[derive(Clone, Debug)]
 pub struct Transaction {
     id: Uuid,
-    date: String,
+    date: DateTime<Utc>,
     amount: f32,
     account: String,
     category: String,
@@ -25,7 +26,7 @@ impl Transaction {
         self.amount
     }
 
-    pub fn build(
+    pub fn from_cls(
         possible_date: Option<&str>,
         possible_amount: Option<&str>,
         possible_account: Option<&str>,
@@ -35,8 +36,13 @@ impl Transaction {
         Transaction {
             id: Uuid::new_v4(),
             date: match possible_date {
-                Some(datetime) => String::from(datetime),
-                None => String::new(),
+                Some(datetime) => {
+                    println!("{}", datetime);
+                    datetime
+                        .parse::<DateTime<Utc>>()
+                        .expect("Couldn't parse date")
+                }
+                None => panic!("No date to parse"),
             },
             amount: match possible_amount {
                 Some(amount) => match str::parse(amount) {
@@ -61,8 +67,8 @@ impl Transaction {
     }
 
     pub fn new() -> Transaction {
-        let date = cli::get_input("Date"); // TODO: use some Date object
-        let mut possible_amount = cli::get_input("Amount: ");
+        let date = cli::try_into_date(&cli::get_input("Date")); // TODO: use some Date object
+        let mut possible_amount = cli::get_input("Amount");
         let amount = cli::try_into_money(&mut possible_amount);
         let account = cli::get_input("Account"); //TODO: compare with Account names
         let category = cli::get_input("Category"); //TODO: compare with Category names
@@ -80,7 +86,7 @@ impl Transaction {
     pub fn search(transactions: &Vec<Transaction>, arg: &String) {
         println!("===== Search Results =====");
         for tra in transactions.iter() {
-            if tra.date.contains(arg)
+            if tra.date.to_string().contains(arg)
                 || tra.account.contains(arg)
                 || tra.category.contains(arg)
                 || tra.description.contains(arg)
@@ -105,7 +111,7 @@ impl Transaction {
     pub fn edit(&mut self) {
         let field = cli::get_input("Field to edit");
         if field == "date" {
-            self.date = cli::get_input("Date");
+            self.date = cli::try_into_date(&cli::get_input("Date"));
         } else if field == "amount" {
             self.amount = cli::try_into_money(&mut cli::get_input("Amount"));
         } else if field == "account" {
@@ -128,7 +134,7 @@ impl Transaction {
 
     pub fn to_cls(&self) -> String {
         let mut st = String::new();
-        st.push_str(&self.date);
+        st.push_str(&cli::try_date_to_string(self.date));
         st.push(',');
         st.push_str(&self.amount.to_string());
         st.push(',');
@@ -148,7 +154,7 @@ impl fmt::Display for Transaction {
             f,
             "{},\t{}\t{}\t\t{}\t\t{}\t\t{}",
             self.simplify_id(),
-            self.date,
+            self.date.format("%m/%d/%Y"),
             self.amount,
             self.account,
             self.category,

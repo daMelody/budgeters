@@ -1,8 +1,6 @@
 ? explore possibility of using tui-rs
-* refine Display for Account, Category, Transaction
-? explore crates.io for Date functionality
 ? consider using JSON or TOML in future
+? implement Display with prettytable-rs
 
 TODO: add a sorting functionality for Transaction -> s
 TODO: add multi word search for Transaction
-! TODO: add the calculate functionality

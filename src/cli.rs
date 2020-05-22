@@ -1,3 +1,4 @@
+use chrono::{DateTime, NaiveDate, SecondsFormat, Utc};
 use std::io::{self, prelude::*};
 
 // getting the commands
@@ -71,4 +72,13 @@ pub fn try_into_money(possible_num: &mut String) -> f32 {
             }
         }
     }
+}
+
+pub fn try_into_date(possible_date: &String) -> DateTime<Utc> {
+    let dt = NaiveDate::parse_from_str(possible_date, "%m/%d/%Y").expect("Couldn't parse date");
+    DateTime::<Utc>::from_utc(dt.and_hms(0, 0, 0), Utc)
+}
+
+pub fn try_date_to_string(date_time: DateTime<Utc>) -> String {
+    date_time.to_rfc3339_opts(SecondsFormat::Millis, true)
 }

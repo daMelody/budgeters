@@ -19,7 +19,7 @@ impl Category {
         self.actual = new_actual;
     }
 
-    pub fn build(
+    pub fn from_cls(
         possible_name: Option<&str>,
         possible_expected: Option<&str>,
         possible_actual: Option<&str>,

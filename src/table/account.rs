@@ -18,7 +18,7 @@ impl Account {
         self.value = new_value;
     }
 
-    pub fn build(possible_name: Option<&str>, possible_value: Option<&str>) -> Account {
+    pub fn from_cls(possible_name: Option<&str>, possible_value: Option<&str>) -> Account {
         Account {
             id: Uuid::new_v4(),
             name: match possible_name {
