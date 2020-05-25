@@ -2,57 +2,57 @@ use home; // for the home_dir function
 use std::fs::{self, ReadDir};
 use std::path::{Path, PathBuf};
 
-mod table;
-use table::Table;
+mod data;
+use data::Data;
 mod cli;
 use cli::Command;
 
-fn setup() -> Table {
+fn setup() -> Data {
     println!("Setting up...");
-    let mut new_table = Table::new();
+    let mut new_data = Data::new();
     match fs::read_dir(Path::new(&get_dir_path())) {
-        Ok(files) => parse_dir(&mut new_table, files),
+        Ok(files) => parse_dir(&mut new_data, files),
         Err(e) => {
             eprintln!("Error setting up: {}", e);
-            new_table
+            new_data
         }
     }
 }
 
-fn shutdown(table: &Table) {
+fn shutdown(data: &Data) {
     println!("Shutting down...");
     let root = get_dir_path();
     // write out Accounts
     let mut accounts = root.clone();
     accounts.push_str("/Account.cls");
-    fs::write(Path::new(&accounts), table.to_cls(&accounts)).expect("Failed to save accounts.");
+    fs::write(Path::new(&accounts), data.to_cls(&accounts)).expect("Failed to save accounts.");
     let mut categories = root.clone();
     categories.push_str("/Category.cls");
-    fs::write(Path::new(&categories), table.to_cls(&categories))
+    fs::write(Path::new(&categories), data.to_cls(&categories))
         .expect("Failed to save categories.");
     let mut transactions = root.clone();
     transactions.push_str("/Transaction.cls");
-    fs::write(Path::new(&transactions), table.to_cls(&transactions))
+    fs::write(Path::new(&transactions), data.to_cls(&transactions))
         .expect("Failed to save transactions.");
 }
 
 pub fn run() {
-    let mut table = setup();
+    let mut data = setup();
     loop {
         match cli::prompt() {
             Command::Cancel => break,
             Command::Quit => {
-                shutdown(&mut table);
+                shutdown(&mut data);
                 break;
             }
-            Command::Update => table.update(),
+            Command::Update => data.update(),
             Command::Empty => continue,
-            Command::Add(ref args) => table.add(args),
-            Command::Edit(ref args) => table.edit(args),
-            Command::Delete(ref args) => table.delete(args),
-            Command::Search(ref args) => table.search(args),
-            Command::List(ref args) => table.list(args),
-            Command::RollOver(ref args) => table.roll(args), // TODO: table.rollover(args)
+            Command::Add(ref args) => data.add(args),
+            Command::Edit(ref args) => data.edit(args),
+            Command::Delete(ref args) => data.delete(args),
+            Command::Search(ref args) => data.search(args),
+            Command::List(ref args) => data.list(args),
+            Command::RollOver(ref args) => data.roll(args), // TODO: data.roll(args)
         }
     }
 }
@@ -75,12 +75,12 @@ fn get_dir_path() -> String {
     root
 }
 
-fn parse_dir(new_table: &mut Table, files: ReadDir) -> Table {
+fn parse_dir(new_data: &mut Data, files: ReadDir) -> Data {
     for f in files {
         match f {
             Ok(f) => {
                 if let Ok(contents) = fs::read_to_string(f.path()) {
-                    parse_file(new_table, contents, f.path());
+                    parse_file(new_data, contents, f.path());
                 } else {
                     eprintln!("Error converting file to String, making new list");
                 }
@@ -90,16 +90,16 @@ fn parse_dir(new_table: &mut Table, files: ReadDir) -> Table {
             }
         };
     }
-    new_table.clone()
+    new_data.clone()
 }
 
-fn parse_file(new_table: &mut Table, contents: String, filename: PathBuf) {
+fn parse_file(new_data: &mut Data, contents: String, filename: PathBuf) {
     if filename.ends_with("Account.cls") {
-        new_table.build_accounts(contents);
+        new_data.build_accounts(contents);
     } else if filename.ends_with("Category.cls") {
-        new_table.build_categories(contents);
+        new_data.build_categories(contents);
     } else if filename.ends_with("Transaction.cls") {
-        new_table.build_transactions(contents);
+        new_data.build_transactions(contents);
     } else {
         eprintln!("Unexpected filename while parsing file");
     }

@@ -1,5 +1,6 @@
 use crate::cli;
 use chrono::{DateTime, Utc};
+use prettytable::{Cell, Row, Table};
 use std::fmt;
 use uuid::{adapter::Simple, Uuid};
 
@@ -14,6 +15,18 @@ pub struct Transaction {
 }
 
 impl Transaction {
+    pub fn get_simple_id(&self) -> String {
+        self.simplify_id()
+    }
+
+    pub fn get_date(&self) -> String {
+        self.date.format("%m/%d/%Y").to_string()
+    }
+
+    pub fn get_amount(&self) -> f32 {
+        self.amount
+    }
+
     pub fn get_account(&self) -> &str {
         &self.account
     }
@@ -22,8 +35,8 @@ impl Transaction {
         &self.category
     }
 
-    pub fn get_amount(&self) -> f32 {
-        self.amount
+    pub fn get_description(&self) -> &str {
+        &self.description
     }
 
     pub fn from_cls(
@@ -36,12 +49,9 @@ impl Transaction {
         Transaction {
             id: Uuid::new_v4(),
             date: match possible_date {
-                Some(datetime) => {
-                    println!("{}", datetime);
-                    datetime
-                        .parse::<DateTime<Utc>>()
-                        .expect("Couldn't parse date")
-                }
+                Some(datetime) => datetime
+                    .parse::<DateTime<Utc>>()
+                    .expect("Couldn't parse date"),
                 None => panic!("No date to parse"),
             },
             amount: match possible_amount {
@@ -84,16 +94,33 @@ impl Transaction {
     }
 
     pub fn search(transactions: &Vec<Transaction>, arg: &String) {
-        println!("===== Search Results =====");
+        println!("==== Search Results ====");
+        let mut search_table = Table::new();
+        search_table.add_row(Row::new(vec![
+            Cell::new("id"),
+            Cell::new("date"),
+            Cell::new("amount"),
+            Cell::new("account"),
+            Cell::new("category"),
+            Cell::new("description"),
+        ]));
         for tra in transactions.iter() {
             if tra.date.to_string().contains(arg)
                 || tra.account.contains(arg)
                 || tra.category.contains(arg)
                 || tra.description.contains(arg)
             {
-                println!("{}", tra);
+                search_table.add_row(Row::new(vec![
+                    Cell::new(&tra.get_simple_id()),
+                    Cell::new(&tra.get_date()),
+                    Cell::new(&tra.get_amount().to_string()),
+                    Cell::new(&tra.get_account()),
+                    Cell::new(&tra.get_category()),
+                    Cell::new(&tra.get_description()),
+                ]));
             }
         }
+        search_table.printstd();
     }
 
     pub fn find(transactions: &Vec<Transaction>) -> i32 {

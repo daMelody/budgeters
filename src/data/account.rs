@@ -10,10 +10,17 @@ pub struct Account {
 }
 
 impl Account {
+    pub fn get_simple_id(&self) -> String {
+        self.simplify_id()
+    }
+
     pub fn get_name(&self) -> &str {
         &self.name
     }
 
+    pub fn get_value(&self) -> &f32 {
+        &self.value
+    }
     pub fn set_value(&mut self, new_value: f32) {
         self.value = new_value;
     }

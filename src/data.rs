@@ -1,35 +1,37 @@
-mod account;
-mod category;
-mod transaction;
 use account::Account;
 use category::Category;
+use prettytable::{Cell, Row, Table};
 use std::collections::HashMap;
 use transaction::Transaction;
 
+mod account;
+mod category;
+mod transaction;
+
 #[derive(Clone, Debug)]
-pub struct Table {
+pub struct Data {
     pub accounts: Vec<Account>,
     pub categories: Vec<Category>,
     pub transactions: Vec<Transaction>,
 }
 
-pub enum TableType {
+pub enum DataType {
     Account,
     Category,
     Transaction,
 }
 
-impl Table {
-    /// build empty Table struct
-    pub fn new() -> Table {
-        Table {
+impl Data {
+    /// build empty Data struct
+    pub fn new() -> Data {
+        Data {
             accounts: Vec::new(),
             categories: Vec::new(),
             transactions: Vec::new(),
         }
     }
 
-    /// build the Table.accounts Vec from file contents
+    /// build the data.accounts Vec from file contents
     ///     - creates new Vec<Account> if file contents are empty
     pub fn build_accounts(&mut self, contents: String) {
         let mut accounts: Vec<Account> = Vec::new();
@@ -43,7 +45,7 @@ impl Table {
         self.accounts = accounts;
     }
 
-    /// build the Table.categories Vec from file contents
+    /// build the data.categories Vec from file contents
     ///     - creates new Vec<Category> if file contents are empty
     pub fn build_categories(&mut self, contents: String) {
         let mut categories: Vec<Category> = Vec::new();
@@ -57,7 +59,7 @@ impl Table {
         self.categories = categories;
     }
 
-    /// build the Table.transactions Vec from file contents
+    /// build the data.transactions Vec from file contents
     ///     - creates new Vec<Transaction> if file contents are empty
     pub fn build_transactions(&mut self, contents: String) {
         let mut transactions: Vec<Transaction> = Vec::new();
@@ -77,50 +79,85 @@ impl Table {
         self.transactions = transactions;
     }
 
-    /// display the list of TableType
-    pub fn display(&self, table: TableType) {
-        match table {
-            TableType::Account => {
+    /// display the list of DataType
+    pub fn display(&self, data: DataType) {
+        match data {
+            DataType::Account => {
                 println!("===== ACCOUNTS =====");
-                println!();
+                let mut account_table = Table::new();
+                account_table.add_row(Row::new(vec![
+                    Cell::new("id"),
+                    Cell::new("name"),
+                    Cell::new("value"),
+                ]));
                 for acc in self.accounts.iter() {
-                    println!("{}", acc);
+                    account_table.add_row(Row::new(vec![
+                        Cell::new(&acc.get_simple_id()),
+                        Cell::new(&acc.get_name()),
+                        Cell::new(&acc.get_value().to_string()),
+                    ]));
                 }
-                println!();
+                account_table.printstd();
             }
-            TableType::Category => {
+            DataType::Category => {
                 println!("===== CATEGORIES =====");
-                println!();
+                let mut category_table = Table::new();
+                category_table.add_row(Row::new(vec![
+                    Cell::new("id"),
+                    Cell::new("name"),
+                    Cell::new("expected"),
+                    Cell::new("actual"),
+                ]));
                 for cat in self.categories.iter() {
-                    println!("{}", cat);
+                    category_table.add_row(Row::new(vec![
+                        Cell::new(&cat.get_simple_id()),
+                        Cell::new(&cat.get_name()),
+                        Cell::new(&cat.get_expected().to_string()),
+                        Cell::new(&cat.get_actual().to_string()),
+                    ]));
                 }
-                println!();
+                category_table.printstd();
             }
-            TableType::Transaction => {
+            DataType::Transaction => {
                 println!("===== TRANSACTIONS =====");
-                println!();
-                for tran in self.transactions.iter() {
-                    println!("{}", tran);
+                let mut transaction_table = Table::new();
+                transaction_table.add_row(Row::new(vec![
+                    Cell::new("id"),
+                    Cell::new("date"),
+                    Cell::new("amount"),
+                    Cell::new("account"),
+                    Cell::new("category"),
+                    Cell::new("description"),
+                ]));
+                for tra in self.transactions.iter() {
+                    transaction_table.add_row(Row::new(vec![
+                        Cell::new(&tra.get_simple_id()),
+                        Cell::new(&tra.get_date()),
+                        Cell::new(&tra.get_amount().to_string()),
+                        Cell::new(&tra.get_account()),
+                        Cell::new(&tra.get_category()),
+                        Cell::new(&tra.get_description()),
+                    ]));
                 }
-                println!();
+                transaction_table.printstd();
             }
         }
     }
 
-    /// returns an array of String corresponding to the three TableTypes
-    const TABLE_TYPES: [&'static str; 3] = ["acc", "cat", "tra"];
+    /// returns an array of String corresponding to the three DataTypes
+    const DATA_TYPES: [&'static str; 3] = ["acc", "cat", "tra"];
 
     pub fn list(&self, arg: &String) {
         // expect args to have a type argument
         if arg.is_empty() {
             return;
         }
-        if arg == &Table::TABLE_TYPES[0] {
-            self.display(TableType::Account);
-        } else if arg == &Table::TABLE_TYPES[1] {
-            self.display(TableType::Category);
-        } else if arg == &Table::TABLE_TYPES[2] {
-            self.display(TableType::Transaction);
+        if arg == &Data::DATA_TYPES[0] {
+            self.display(DataType::Account);
+        } else if arg == &Data::DATA_TYPES[1] {
+            self.display(DataType::Category);
+        } else if arg == &Data::DATA_TYPES[2] {
+            self.display(DataType::Transaction);
         }
     }
 
@@ -132,17 +169,17 @@ impl Table {
         Transaction::search(&self.transactions, arg);
     }
 
-    /* require mutable Table */
+    /* require mutable Data */
 
     pub fn add(&mut self, arg: &String) {
         if arg.is_empty() {
             return;
         }
-        if arg == &Table::TABLE_TYPES[0] {
+        if arg == &Data::DATA_TYPES[0] {
             self.accounts.push(Account::new());
-        } else if arg == &Table::TABLE_TYPES[1] {
+        } else if arg == &Data::DATA_TYPES[1] {
             self.categories.push(Category::new());
-        } else if arg == &Table::TABLE_TYPES[2] {
+        } else if arg == &Data::DATA_TYPES[2] {
             self.transactions.push(Transaction::new());
         }
     }
@@ -151,7 +188,7 @@ impl Table {
         if arg.is_empty() {
             return;
         }
-        if arg == &Table::TABLE_TYPES[0] {
+        if arg == &Data::DATA_TYPES[0] {
             let index = Account::find(&self.accounts);
             if index >= 0 {
                 if let Some(acc) = self.accounts.get_mut(index as usize) {
@@ -159,7 +196,7 @@ impl Table {
                     acc.edit();
                 }
             }
-        } else if arg == &Table::TABLE_TYPES[1] {
+        } else if arg == &Data::DATA_TYPES[1] {
             let index = Category::find(&self.categories);
             if index >= 0 {
                 if let Some(cat) = self.categories.get_mut(index as usize) {
@@ -167,7 +204,7 @@ impl Table {
                     cat.edit();
                 }
             }
-        } else if arg == &Table::TABLE_TYPES[2] {
+        } else if arg == &Data::DATA_TYPES[2] {
             let index = Transaction::find(&self.transactions);
             if index >= 0 {
                 if let Some(tra) = self.transactions.get_mut(index as usize) {
@@ -182,17 +219,17 @@ impl Table {
         if arg.is_empty() {
             return;
         }
-        if arg == &Table::TABLE_TYPES[0] {
+        if arg == &Data::DATA_TYPES[0] {
             let index = Account::find(&self.accounts);
             if index >= 0 {
                 self.accounts.remove(index as usize);
             }
-        } else if arg == &Table::TABLE_TYPES[1] {
+        } else if arg == &Data::DATA_TYPES[1] {
             let index = Category::find(&self.categories);
             if index >= 0 {
                 self.categories.remove(index as usize);
             }
-        } else if arg == &Table::TABLE_TYPES[2] {
+        } else if arg == &Data::DATA_TYPES[2] {
             let index = Transaction::find(&self.transactions);
             if index >= 0 {
                 self.transactions.remove(index as usize);
@@ -229,8 +266,8 @@ impl Table {
             let rounded = (*category_map.get(cat.get_name()).unwrap() * 100.0).round() / 100.0;
             cat.set_actual(rounded);
         }
-        self.display(TableType::Account);
-        self.display(TableType::Category);
+        self.display(DataType::Account);
+        self.display(DataType::Category);
     }
 
     pub fn roll(&mut self, _arg: &String) {} // TODO:
