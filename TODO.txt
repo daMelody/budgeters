@@ -1,6 +1,6 @@
 ? explore possibility of using tui-rs
 ? consider using JSON or TOML in future
-? implement Display with prettytable-rs
 
 TODO: add a sorting functionality for Transaction -> s
 TODO: add multi word search for Transaction
+TODO: add option for case-insensitive search

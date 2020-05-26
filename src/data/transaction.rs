@@ -1,6 +1,5 @@
 use crate::cli;
 use chrono::{DateTime, Utc};
-use prettytable::{Cell, Row, Table};
 use std::fmt;
 use uuid::{adapter::Simple, Uuid};
 
@@ -94,32 +93,30 @@ impl Transaction {
     }
 
     pub fn search(transactions: &Vec<Transaction>, arg: &String) {
-        println!("==== Search Results ====");
-        let mut search_table = Table::new();
-        search_table.add_row(Row::new(vec![
-            Cell::new("id"),
-            Cell::new("date"),
-            Cell::new("amount"),
-            Cell::new("account"),
-            Cell::new("category"),
-            Cell::new("description"),
-        ]));
+        let mut searched = Vec::new();
         for tra in transactions.iter() {
             if tra.date.to_string().contains(arg)
                 || tra.account.contains(arg)
                 || tra.category.contains(arg)
                 || tra.description.contains(arg)
             {
-                search_table.add_row(Row::new(vec![
-                    Cell::new(&tra.get_simple_id()),
-                    Cell::new(&tra.get_date()),
-                    Cell::new(&tra.get_amount().to_string()),
-                    Cell::new(&tra.get_account()),
-                    Cell::new(&tra.get_category()),
-                    Cell::new(&tra.get_description()),
-                ]));
+                searched.push({
+                    let mut tmp = Vec::new();
+                    tmp.push(tra.get_simple_id());
+                    tmp.push(tra.get_date());
+                    tmp.push(tra.get_amount().to_string());
+                    tmp.push(tra.get_account().to_string());
+                    tmp.push(tra.get_category().to_string());
+                    tmp.push(tra.get_description().to_string());
+                    tmp
+                });
             }
         }
+        println!("==== Search Results ====");
+        let search_table = cli::make_table(
+            vec!["id", "date", "amount", "account", "category", "description"],
+            &searched,
+        );
         search_table.printstd();
     }
 

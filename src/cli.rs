@@ -1,4 +1,5 @@
 use chrono::{DateTime, NaiveDate, SecondsFormat, Utc};
+use prettytable::{Cell, Row, Table};
 use std::io::{self, prelude::*};
 
 // getting the commands
@@ -81,4 +82,29 @@ pub fn try_into_date(possible_date: &String) -> DateTime<Utc> {
 
 pub fn try_date_to_string(date_time: DateTime<Utc>) -> String {
     date_time.to_rfc3339_opts(SecondsFormat::Millis, true)
+}
+
+pub fn make_table(headers: Vec<&str>, contents: &Vec<Vec<String>>) -> Table {
+    let mut table = Table::new();
+    // add headers to the table
+    table.add_row(Row::new({
+        let mut cells = Vec::new();
+        for h in headers {
+            cells.push(
+                // style: center & bold text, Yellow color
+                Cell::new(h).style_spec("cbFy"),
+            );
+        }
+        cells
+    }));
+    for row in contents {
+        table.add_row(Row::new({
+            let mut cells = Vec::new();
+            for c in row {
+                cells.push(Cell::new(c))
+            }
+            cells
+        }));
+    }
+    table
 }

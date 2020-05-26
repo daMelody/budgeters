@@ -1,12 +1,12 @@
+use crate::cli;
 use account::Account;
 use category::Category;
-use prettytable::{Cell, Row, Table};
 use std::collections::HashMap;
 use transaction::Transaction;
 
-mod account;
-mod category;
-mod transaction;
+pub mod account;
+pub mod category;
+pub mod transaction;
 
 #[derive(Clone, Debug)]
 pub struct Data {
@@ -83,62 +83,56 @@ impl Data {
     pub fn display(&self, data: DataType) {
         match data {
             DataType::Account => {
-                println!("===== ACCOUNTS =====");
-                let mut account_table = Table::new();
-                account_table.add_row(Row::new(vec![
-                    Cell::new("id"),
-                    Cell::new("name"),
-                    Cell::new("value"),
-                ]));
+                let mut contents = Vec::new();
                 for acc in self.accounts.iter() {
-                    account_table.add_row(Row::new(vec![
-                        Cell::new(&acc.get_simple_id()),
-                        Cell::new(&acc.get_name()),
-                        Cell::new(&acc.get_value().to_string()),
-                    ]));
+                    contents.push({
+                        let mut tmp = Vec::new();
+                        tmp.push(acc.get_simple_id());
+                        tmp.push(acc.get_name().to_string());
+                        tmp.push(acc.get_value().to_string());
+                        tmp
+                    });
                 }
+                println!("===== ACCOUNTS =====");
+                let account_table = cli::make_table(vec!["id", "name", "value"], &contents);
                 account_table.printstd();
             }
             DataType::Category => {
-                println!("===== CATEGORIES =====");
-                let mut category_table = Table::new();
-                category_table.add_row(Row::new(vec![
-                    Cell::new("id"),
-                    Cell::new("name"),
-                    Cell::new("expected"),
-                    Cell::new("actual"),
-                ]));
+                let mut contents = Vec::new();
                 for cat in self.categories.iter() {
-                    category_table.add_row(Row::new(vec![
-                        Cell::new(&cat.get_simple_id()),
-                        Cell::new(&cat.get_name()),
-                        Cell::new(&cat.get_expected().to_string()),
-                        Cell::new(&cat.get_actual().to_string()),
-                    ]));
+                    contents.push({
+                        let mut tmp = Vec::new();
+                        tmp.push(cat.get_simple_id());
+                        tmp.push(cat.get_name().to_string());
+                        tmp.push(cat.get_expected().to_string());
+                        tmp.push(cat.get_actual().to_string());
+                        tmp
+                    });
                 }
+                println!("===== CATEGORIES =====");
+                let category_table =
+                    cli::make_table(vec!["id", "name", "expected", "actual"], &contents);
                 category_table.printstd();
             }
             DataType::Transaction => {
-                println!("===== TRANSACTIONS =====");
-                let mut transaction_table = Table::new();
-                transaction_table.add_row(Row::new(vec![
-                    Cell::new("id"),
-                    Cell::new("date"),
-                    Cell::new("amount"),
-                    Cell::new("account"),
-                    Cell::new("category"),
-                    Cell::new("description"),
-                ]));
+                let mut contents = Vec::new();
                 for tra in self.transactions.iter() {
-                    transaction_table.add_row(Row::new(vec![
-                        Cell::new(&tra.get_simple_id()),
-                        Cell::new(&tra.get_date()),
-                        Cell::new(&tra.get_amount().to_string()),
-                        Cell::new(&tra.get_account()),
-                        Cell::new(&tra.get_category()),
-                        Cell::new(&tra.get_description()),
-                    ]));
+                    contents.push({
+                        let mut tmp = Vec::new();
+                        tmp.push(tra.get_simple_id());
+                        tmp.push(tra.get_date());
+                        tmp.push(tra.get_amount().to_string());
+                        tmp.push(tra.get_account().to_string());
+                        tmp.push(tra.get_category().to_string());
+                        tmp.push(tra.get_description().to_string());
+                        tmp
+                    });
                 }
+                println!("===== TRANSACTIONS =====");
+                let transaction_table = cli::make_table(
+                    vec!["id", "date", "amount", "account", "category", "description"],
+                    &contents,
+                );
                 transaction_table.printstd();
             }
         }
