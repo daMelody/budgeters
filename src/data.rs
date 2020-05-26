@@ -79,65 +79,6 @@ impl Data {
         self.transactions = transactions;
     }
 
-    /// display the list of DataType
-    pub fn display(&self, data: DataType) {
-        match data {
-            DataType::Account => {
-                let mut contents = Vec::new();
-                for acc in self.accounts.iter() {
-                    contents.push({
-                        let mut tmp = Vec::new();
-                        tmp.push(acc.get_simple_id());
-                        tmp.push(acc.get_name().to_string());
-                        tmp.push(acc.get_value().to_string());
-                        tmp
-                    });
-                }
-                println!("===== ACCOUNTS =====");
-                let account_table = cli::make_table(vec!["id", "name", "value"], &contents);
-                account_table.printstd();
-            }
-            DataType::Category => {
-                let mut contents = Vec::new();
-                for cat in self.categories.iter() {
-                    contents.push({
-                        let mut tmp = Vec::new();
-                        tmp.push(cat.get_simple_id());
-                        tmp.push(cat.get_name().to_string());
-                        tmp.push(cat.get_expected().to_string());
-                        tmp.push(cat.get_actual().to_string());
-                        tmp
-                    });
-                }
-                println!("===== CATEGORIES =====");
-                let category_table =
-                    cli::make_table(vec!["id", "name", "expected", "actual"], &contents);
-                category_table.printstd();
-            }
-            DataType::Transaction => {
-                let mut contents = Vec::new();
-                for tra in self.transactions.iter() {
-                    contents.push({
-                        let mut tmp = Vec::new();
-                        tmp.push(tra.get_simple_id());
-                        tmp.push(tra.get_date());
-                        tmp.push(tra.get_amount().to_string());
-                        tmp.push(tra.get_account().to_string());
-                        tmp.push(tra.get_category().to_string());
-                        tmp.push(tra.get_description().to_string());
-                        tmp
-                    });
-                }
-                println!("===== TRANSACTIONS =====");
-                let transaction_table = cli::make_table(
-                    vec!["id", "date", "amount", "account", "category", "description"],
-                    &contents,
-                );
-                transaction_table.printstd();
-            }
-        }
-    }
-
     /// returns an array of String corresponding to the three DataTypes
     const DATA_TYPES: [&'static str; 3] = ["acc", "cat", "tra"];
 
@@ -260,8 +201,6 @@ impl Data {
             let rounded = (*category_map.get(cat.get_name()).unwrap() * 100.0).round() / 100.0;
             cat.set_actual(rounded);
         }
-        self.display(DataType::Account);
-        self.display(DataType::Category);
     }
 
     pub fn roll(&mut self, _arg: &String) {} // TODO:
@@ -288,6 +227,61 @@ impl Data {
         } else {
             eprintln!("Unexpected filename while writing to cls");
             String::new()
+        }
+    }
+
+    /// display the list of DataType
+    pub fn display(&self, data: DataType) {
+        match data {
+            DataType::Account => {
+                let mut contents = Vec::new();
+                for acc in self.accounts.iter() {
+                    contents.push({
+                        let mut tmp = Vec::new();
+                        tmp.push(acc.get_simple_id());
+                        tmp.push(acc.get_name().to_string());
+                        tmp.push(acc.get_value().to_string());
+                        tmp
+                    });
+                }
+                println!("===== ACCOUNTS =====");
+                cli::make_table(vec!["id", "name", "value"], &contents);
+            }
+            DataType::Category => {
+                let mut contents = Vec::new();
+                for cat in self.categories.iter() {
+                    contents.push({
+                        let mut tmp = Vec::new();
+                        tmp.push(cat.get_simple_id());
+                        tmp.push(cat.get_name().to_string());
+                        tmp.push(cat.get_expected().to_string());
+                        tmp.push(cat.get_actual().to_string());
+                        tmp
+                    });
+                }
+                println!("===== CATEGORIES =====");
+                cli::make_table(vec!["id", "name", "expected", "actual"], &contents);
+            }
+            DataType::Transaction => {
+                let mut contents = Vec::new();
+                for tra in self.transactions.iter() {
+                    contents.push({
+                        let mut tmp = Vec::new();
+                        tmp.push(tra.get_simple_id());
+                        tmp.push(tra.get_date());
+                        tmp.push(tra.get_amount().to_string());
+                        tmp.push(tra.get_account().to_string());
+                        tmp.push(tra.get_category().to_string());
+                        tmp.push(tra.get_description().to_string());
+                        tmp
+                    });
+                }
+                println!("===== TRANSACTIONS =====");
+                cli::make_table(
+                    vec!["id", "date", "amount", "account", "category", "description"],
+                    &contents,
+                );
+            }
         }
     }
 }

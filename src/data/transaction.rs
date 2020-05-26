@@ -113,11 +113,10 @@ impl Transaction {
             }
         }
         println!("==== Search Results ====");
-        let search_table = cli::make_table(
+        cli::make_table(
             vec!["id", "date", "amount", "account", "category", "description"],
             &searched,
         );
-        search_table.printstd();
     }
 
     pub fn find(transactions: &Vec<Transaction>) -> i32 {

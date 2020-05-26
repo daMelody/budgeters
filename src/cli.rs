@@ -25,8 +25,15 @@ pub fn prompt() -> Command {
         Some(st) => st,
         None => "",
     };
-    let types = match inputs.get(1) {
-        Some(st) => String::from(st),
+    let types = match inputs.get(1..) {
+        Some(st) => {
+            let mut tmp = String::new();
+            for s in st {
+                tmp.push_str(s);
+                tmp.push(' ');
+            }
+            tmp.trim_end().to_string()
+        }
         None => String::new(),
     };
     match command {
@@ -38,7 +45,7 @@ pub fn prompt() -> Command {
         "e" => Command::Edit(types),
         "d" => Command::Delete(types),
         "/" => Command::Search(types),
-        "r" => Command::RollOver(types),
+        "--roll" => Command::RollOver(types),
         _ => Command::Empty,
     }
 }
@@ -84,7 +91,7 @@ pub fn try_date_to_string(date_time: DateTime<Utc>) -> String {
     date_time.to_rfc3339_opts(SecondsFormat::Millis, true)
 }
 
-pub fn make_table(headers: Vec<&str>, contents: &Vec<Vec<String>>) -> Table {
+pub fn make_table(headers: Vec<&str>, contents: &Vec<Vec<String>>) {
     let mut table = Table::new();
     // add headers to the table
     table.add_row(Row::new({
@@ -106,5 +113,5 @@ pub fn make_table(headers: Vec<&str>, contents: &Vec<Vec<String>>) -> Table {
             cells
         }));
     }
-    table
+    table.printstd();
 }
