@@ -1,5 +1,11 @@
 ? explore possibility of using tui-rs
 ? consider using JSON or TOML in future
 
+TODO: add new Transfer
 TODO: add a sorting functionality for Transaction -> s
+TODO: conditional coloring of cell text
+    - transaction.amount (red for expense, green for income)
+    - category.actual (red if over expected, green if under or at expected)
+    - account.value (red if negative, green if positive)
+    - transaction.category, transaction.account (blue if == <empty>)
 TODO: add option for case-insensitive search

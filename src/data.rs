@@ -1,4 +1,4 @@
-use crate::cli;
+use crate::cli::{self, Content};
 use account::Account;
 use category::Category;
 use std::collections::HashMap;
@@ -177,11 +177,23 @@ impl Data {
         if arg == &Data::DATA_TYPES[0] {
             let index = Account::find(&self.accounts);
             if index >= 0 {
+                let deleted = self.accounts.get(index as usize).unwrap();
+                for tr in self.transactions.iter_mut() {
+                    if tr.get_account() == deleted.get_name() {
+                        tr.set_account(String::from("<empty>"));
+                    }
+                }
                 self.accounts.remove(index as usize);
             }
         } else if arg == &Data::DATA_TYPES[1] {
             let index = Category::find(&self.categories);
             if index >= 0 {
+                let deleted = self.categories.get(index as usize).unwrap();
+                for tr in self.transactions.iter_mut() {
+                    if tr.get_category() == deleted.get_name() {
+                        tr.set_category(String::from("<empty>"));
+                    }
+                }
                 self.categories.remove(index as usize);
             }
         } else if arg == &Data::DATA_TYPES[2] {
@@ -211,15 +223,20 @@ impl Data {
             };
             category_map.insert(cat_name, cat_value);
         }
+        println!("{:?}", category_map);
         // iterate through Accounts and update Value fields
         for acc in self.accounts.iter_mut() {
-            let rounded = (*account_map.get(acc.get_name()).unwrap() * 100.0).round() / 100.0;
-            acc.set_value(rounded);
+            match account_map.get(acc.get_name()) {
+                Some(num) => acc.set_value(cli::money_round(*num)),
+                None => acc.set_value(0.0),
+            }
         }
         // iterate through Category and update Actual fields
         for cat in self.categories.iter_mut() {
-            let rounded = (*category_map.get(cat.get_name()).unwrap() * 100.0).round() / 100.0;
-            cat.set_actual(rounded);
+            match category_map.get(cat.get_name()) {
+                Some(num) => cat.set_actual(cli::money_round(*num)),
+                None => cat.set_actual(0.0),
+            }
         }
     }
 
@@ -255,31 +272,45 @@ impl Data {
         match data {
             DataType::Account => {
                 let mut contents = Vec::new();
+                let mut total_value = 0.0;
                 for acc in self.accounts.iter() {
+                    total_value += acc.get_value();
                     contents.push({
                         let mut tmp = Vec::new();
-                        tmp.push(acc.get_simple_id());
-                        tmp.push(acc.get_name().to_string());
-                        tmp.push(acc.get_value().to_string());
+                        tmp.push(Content::St(acc.get_simple_id()));
+                        tmp.push(Content::St(acc.get_name().to_string()));
+                        tmp.push(Content::Num(acc.get_value().to_string()));
                         tmp
                     });
                 }
                 println!("===== ACCOUNTS =====");
+                println!("You are worth ${}", cli::money_round(total_value));
                 cli::make_table(vec!["id", "name", "value"], &contents);
             }
             DataType::Category => {
                 let mut contents = Vec::new();
+                let mut total_expected = 0.0;
+                let mut total_actual = 0.0;
                 for cat in self.categories.iter() {
+                    if cat.get_name() != "Rollover" {
+                        total_expected += cat.get_expected();
+                        total_actual += cat.get_actual();
+                    }
                     contents.push({
                         let mut tmp = Vec::new();
-                        tmp.push(cat.get_simple_id());
-                        tmp.push(cat.get_name().to_string());
-                        tmp.push(cat.get_expected().to_string());
-                        tmp.push(cat.get_actual().to_string());
+                        tmp.push(Content::St(cat.get_simple_id()));
+                        tmp.push(Content::St(cat.get_name().to_string()));
+                        tmp.push(Content::Num(cat.get_expected().to_string()));
+                        tmp.push(Content::Num(cat.get_actual().to_string()));
                         tmp
                     });
                 }
                 println!("===== CATEGORIES =====");
+                println!(
+                    "You had planned to save ${}, you are actually saving ${}",
+                    cli::money_round(total_expected),
+                    cli::money_round(total_actual)
+                );
                 cli::make_table(vec!["id", "name", "expected", "actual"], &contents);
             }
             DataType::Transaction => {
@@ -287,12 +318,12 @@ impl Data {
                 for tra in self.transactions.iter() {
                     contents.push({
                         let mut tmp = Vec::new();
-                        tmp.push(tra.get_simple_id());
-                        tmp.push(tra.get_date());
-                        tmp.push(tra.get_amount().to_string());
-                        tmp.push(tra.get_account().to_string());
-                        tmp.push(tra.get_category().to_string());
-                        tmp.push(tra.get_description().to_string());
+                        tmp.push(Content::St(tra.get_simple_id()));
+                        tmp.push(Content::St(tra.get_date()));
+                        tmp.push(Content::Num(tra.get_amount().to_string()));
+                        tmp.push(Content::St(tra.get_account().to_string()));
+                        tmp.push(Content::St(tra.get_category().to_string()));
+                        tmp.push(Content::St(tra.get_description().to_string()));
                         tmp
                     });
                 }

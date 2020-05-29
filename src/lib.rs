@@ -2,10 +2,10 @@ use home; // for the home_dir function
 use std::fs::{self, ReadDir};
 use std::path::{Path, PathBuf};
 
-mod data;
-use data::Data;
 mod cli;
+mod data;
 use cli::Command;
+use data::Data;
 
 fn setup() -> Data {
     println!("Setting up...");
@@ -40,6 +40,7 @@ pub fn run() {
     let mut data = setup();
     loop {
         match cli::prompt() {
+            Command::Help => cli::print_help(),
             Command::Cancel => break,
             Command::Quit => {
                 shutdown(&mut data);

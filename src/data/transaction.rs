@@ -1,4 +1,4 @@
-use crate::cli;
+use crate::cli::{self, Content};
 use chrono::{DateTime, Utc};
 use std::fmt;
 use uuid::{adapter::Simple, Uuid};
@@ -110,12 +110,12 @@ impl Transaction {
             {
                 searched.push({
                     let mut tmp = Vec::new();
-                    tmp.push(tra.get_simple_id());
-                    tmp.push(tra.get_date());
-                    tmp.push(tra.get_amount().to_string());
-                    tmp.push(tra.get_account().to_string());
-                    tmp.push(tra.get_category().to_string());
-                    tmp.push(tra.get_description().to_string());
+                    tmp.push(Content::St(tra.get_simple_id()));
+                    tmp.push(Content::St(tra.get_date()));
+                    tmp.push(Content::Num(tra.get_amount().to_string()));
+                    tmp.push(Content::St(tra.get_account().to_string()));
+                    tmp.push(Content::St(tra.get_category().to_string()));
+                    tmp.push(Content::St(tra.get_description().to_string()));
                     tmp
                 });
             }
