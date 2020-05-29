@@ -2,6 +2,12 @@ use crate::cli;
 use std::fmt;
 use uuid::{adapter::Simple, Uuid};
 
+pub enum AccountField {
+    Name(String, String),
+    Value,
+    None,
+}
+
 #[derive(Clone, Debug)]
 pub struct Account {
     id: Uuid,
@@ -16,6 +22,10 @@ impl Account {
 
     pub fn get_name(&self) -> &str {
         &self.name
+    }
+
+    pub fn set_name(&mut self, new_name: String) {
+        self.name = new_name;
     }
 
     pub fn get_value(&self) -> &f32 {
@@ -63,14 +73,17 @@ impl Account {
         -1
     }
 
-    pub fn edit(&mut self) {
+    pub fn edit(&mut self) -> AccountField {
         let field = cli::get_input("Field to edit");
         if field == "name" {
-            self.name = cli::get_input("Name")
+            let tmp = self.get_name().to_string();
+            self.set_name(cli::get_input("Name"));
+            AccountField::Name(tmp, self.get_name().to_string())
         } else if field == "value" {
             self.value = cli::try_into_money(&mut cli::get_input("Value"));
+            AccountField::Value
         } else {
-            return;
+            AccountField::None
         }
     }
 

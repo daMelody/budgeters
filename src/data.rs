@@ -128,7 +128,17 @@ impl Data {
             if index >= 0 {
                 if let Some(acc) = self.accounts.get_mut(index as usize) {
                     println!("{}", acc);
-                    acc.edit();
+                    match acc.edit() {
+                        account::AccountField::Name(old, new) => {
+                            for tr in self.transactions.iter_mut() {
+                                if tr.get_account() == old {
+                                    tr.set_account(new.clone());
+                                }
+                            }
+                        }
+                        account::AccountField::Value => (),
+                        account::AccountField::None => (),
+                    }
                 }
             }
         } else if arg == &Data::DATA_TYPES[1] {
@@ -136,7 +146,17 @@ impl Data {
             if index >= 0 {
                 if let Some(cat) = self.categories.get_mut(index as usize) {
                     println!("{}", cat);
-                    cat.edit();
+                    match cat.edit() {
+                        category::CategoryField::Name(old, new) => {
+                            for tr in self.transactions.iter_mut() {
+                                if tr.get_category() == old {
+                                    tr.set_category(new.clone());
+                                }
+                            }
+                        }
+                        category::CategoryField::Expected => (),
+                        category::CategoryField::None => (),
+                    }
                 }
             }
         } else if arg == &Data::DATA_TYPES[2] {

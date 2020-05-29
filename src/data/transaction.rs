@@ -30,8 +30,16 @@ impl Transaction {
         &self.account
     }
 
+    pub fn set_account(&mut self, new_account: String) {
+        self.account = new_account;
+    }
+
     pub fn get_category(&self) -> &str {
         &self.category
+    }
+
+    pub fn set_category(&mut self, new_category: String) {
+        self.category = new_category;
     }
 
     pub fn get_description(&self) -> &str {
