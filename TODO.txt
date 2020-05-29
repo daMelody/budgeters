@@ -3,3 +3,4 @@
 
 TODO: add a sorting functionality for Transaction -> s
 TODO: add option for case-insensitive search
+TODO: when editing Account or Transaction, if edited field is Name, update all Transactions with old name
