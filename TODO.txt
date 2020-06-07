@@ -1,3 +1,4 @@
 TODO: add a sorting functionality for Transaction -> s
-TODO: add option for case-insensitive search
+TODO: complete the roll functionality
 ? explore adding ability to pipe search function into sort function
+? consider using clap for the command line parsing

@@ -19,8 +19,8 @@ fn setup() -> Data {
     }
 }
 
-fn shutdown(data: &Data) {
-    println!("Shutting down...");
+fn save(data: &Data) {
+    println!("Saving...");
     let root = get_dir_path();
     // write out Accounts
     let mut accounts = root.clone();
@@ -37,13 +37,16 @@ fn shutdown(data: &Data) {
 }
 
 pub fn run() {
-    let mut data = setup();
+    let mut data = Data::new();
     loop {
         match cli::prompt() {
             Command::Help => cli::print_help(),
+            Command::Open => data = setup(),
+            Command::Save => save(&mut data),
+            Command::RollOver(ref args) => data.roll(args), // TODO: data.roll(args)
             Command::Cancel => break,
             Command::Quit => {
-                shutdown(&mut data);
+                save(&mut data);
                 break;
             }
             Command::Update => data.update(),
@@ -53,7 +56,6 @@ pub fn run() {
             Command::Delete(ref args) => data.delete(args),
             Command::Search(ref args) => data.search(args),
             Command::List(ref args) => data.list(args),
-            Command::RollOver(ref args) => data.roll(args), // TODO: data.roll(args)
         }
     }
 }

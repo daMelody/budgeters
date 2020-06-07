@@ -4,6 +4,8 @@ use std::io::{self, prelude::*};
 
 // getting the commands
 pub enum Command {
+    Open,
+    Save,
     Empty,
     Cancel,
     Quit,
@@ -47,6 +49,8 @@ pub fn prompt() -> Command {
         "?" => Command::Help,
         "--update" => Command::Update,
         "--cancel" => Command::Cancel,
+        "--open" => Command::Open,
+        "--save" => Command::Save,
         "--roll" => Command::RollOver(types),
         _ => Command::Empty,
     }
