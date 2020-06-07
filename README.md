@@ -9,6 +9,8 @@ built from three "tables"
 -- Category (cat), made of one or more of the <Category> type
 -- Transaction (tra), made of one or more of the <Transaction> type
 
+* a Transfer (trf) is made of two Transactions such that the all fields are the same except the Amount field, where the the two Amounts' sum == 0
+
 ## commands
 
 a <type> : initiate add method for either <Account>, <Category>, or <Transaction>
@@ -26,5 +28,3 @@ s <field> : sort <Transaction> table by the specified <field>
 --open : open a year/month budget
 --close : close a year/month budget
 --roll <month> <year> <month> <year> : rolls the Table for the first <month>/<year> pair into the second
-
--- Transfer (trf)

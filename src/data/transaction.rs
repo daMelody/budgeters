@@ -84,9 +84,8 @@ impl Transaction {
     }
 
     pub fn new() -> Transaction {
-        let date = cli::try_into_date(&cli::get_input("Date")); // TODO: use some Date object
-        let mut possible_amount = cli::get_input("Amount");
-        let amount = cli::try_into_money(&mut possible_amount);
+        let date = cli::try_into_date(&cli::get_input("Date"));
+        let amount = cli::try_into_money(&mut cli::get_input("Amount"));
         let account = cli::get_input("Account"); //TODO: compare with Account names
         let category = cli::get_input("Category"); //TODO: compare with Category names
         let description = cli::get_input("Description");
@@ -98,6 +97,33 @@ impl Transaction {
             category,
             description,
         }
+    }
+
+    pub fn new_transfer() -> (Transaction, Transaction) {
+        let date = cli::try_into_date(&cli::get_input("Date"));
+        let amount = cli::try_into_money(&mut cli::get_input("Amount"));
+        let from_account = cli::get_input("From Account");
+        let to_account = cli::get_input("To Account");
+        let category = String::from("Transfer");
+        let description = cli::get_input("Description");
+        (
+            Transaction {
+                id: Uuid::new_v4(),
+                date,
+                amount: amount - 2.0 * amount,
+                account: from_account,
+                category: category.clone(),
+                description: description.clone(),
+            },
+            Transaction {
+                id: Uuid::new_v4(),
+                date,
+                amount,
+                account: to_account,
+                category: category.clone(),
+                description: description.clone(),
+            },
+        )
     }
 
     pub fn search(transactions: &Vec<Transaction>, arg: &String) {

@@ -80,7 +80,7 @@ impl Data {
     }
 
     /// returns an array of String corresponding to the three DataTypes
-    const DATA_TYPES: [&'static str; 3] = ["acc", "cat", "tra"];
+    const DATA_TYPES: [&'static str; 4] = ["acc", "cat", "tra", "trf"];
 
     pub fn list(&self, arg: &String) {
         // expect args to have a type argument
@@ -93,6 +93,8 @@ impl Data {
             self.display(DataType::Category);
         } else if arg == &Data::DATA_TYPES[2] {
             self.display(DataType::Transaction);
+        } else {
+            eprintln!("Transfer is not a valid data type for LIST function");
         }
     }
 
@@ -116,6 +118,10 @@ impl Data {
             self.categories.push(Category::new());
         } else if arg == &Data::DATA_TYPES[2] {
             self.transactions.push(Transaction::new());
+        } else {
+            let (from, to) = Transaction::new_transfer();
+            self.transactions.push(from);
+            self.transactions.push(to);
         }
     }
 
@@ -167,6 +173,8 @@ impl Data {
                     tra.edit();
                 }
             }
+        } else {
+            eprintln!("Transfer is not a valid data type for EDIT functionality");
         }
     }
 
@@ -201,10 +209,13 @@ impl Data {
             if index >= 0 {
                 self.transactions.remove(index as usize);
             }
+        } else {
+            eprintln!("Transfer is not a valid data type for DELETE functionality");
         }
     }
 
     pub fn update(&mut self) {
+        println!("Updating...");
         let mut account_map: HashMap<&str, f32> = HashMap::new();
         let mut category_map: HashMap<&str, f32> = HashMap::new();
         // recalculate totals of Accounts and Categories
@@ -217,13 +228,14 @@ impl Data {
             };
             account_map.insert(acc_name, acc_value);
             let cat_name = tra.get_category();
-            let cat_value = match category_map.get(cat_name) {
-                Some(last) => last + tra_amount,
-                None => tra_amount,
-            };
-            category_map.insert(cat_name, cat_value);
+            if cat_name != String::from("Transfer") {
+                let cat_value = match category_map.get(cat_name) {
+                    Some(last) => last + tra_amount,
+                    None => tra_amount,
+                };
+                category_map.insert(cat_name, cat_value);
+            }
         }
-        println!("{:?}", category_map);
         // iterate through Accounts and update Value fields
         for acc in self.accounts.iter_mut() {
             match account_map.get(acc.get_name()) {
@@ -238,6 +250,7 @@ impl Data {
                 None => cat.set_actual(0.0),
             }
         }
+        println!("Done");
     }
 
     pub fn roll(&mut self, _arg: &String) {} // TODO:
