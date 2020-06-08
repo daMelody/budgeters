@@ -41,7 +41,17 @@ pub fn run() {
     loop {
         match cli::prompt() {
             Command::Help => cli::print_help(),
-            Command::Open => data = setup(),
+            Command::Open => {
+                data = if data.accounts.is_empty()
+                    && data.categories.is_empty()
+                    && data.transactions.is_empty()
+                {
+                    setup()
+                } else {
+                    save(&mut data);
+                    setup()
+                }
+            }
             Command::Save => save(&mut data),
             Command::RollOver(ref args) => data.roll(args), // TODO: data.roll(args)
             Command::Cancel => break,
