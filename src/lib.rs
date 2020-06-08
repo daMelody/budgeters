@@ -53,7 +53,7 @@ pub fn run() {
                 }
             }
             Command::Save => save(&mut data),
-            Command::RollOver(ref args) => data.roll(args), // TODO: data.roll(args)
+            Command::RollOver => roll(&mut data), // TODO: data.roll(args)
             Command::Cancel => break,
             Command::Quit => {
                 save(&mut data);
@@ -116,4 +116,16 @@ fn parse_file(new_data: &mut Data, contents: String, filename: PathBuf) {
     } else {
         eprintln!("Unexpected filename while parsing file");
     }
+}
+
+fn roll(_data: &mut Data) {
+    /*data.update(); // make sure that Data is updated
+    save(data);
+    data.transactions.clear();
+    let dir = get_dir_path();
+    for acc in data.accounts.iter() {
+        data.transactions.push(Transaction {
+            date: cli::first_of_month(month, year),
+        })
+    } */
 }

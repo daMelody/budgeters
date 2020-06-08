@@ -253,8 +253,6 @@ impl Data {
         println!("Done");
     }
 
-    pub fn roll(&mut self, _arg: &String) {} // TODO:
-
     pub fn to_cls(&self, path: &String) -> String {
         if path.ends_with("Account.cls") {
             let mut accounts = String::new();

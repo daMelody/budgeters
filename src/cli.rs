@@ -1,4 +1,4 @@
-use chrono::{DateTime, NaiveDate, SecondsFormat, Utc};
+use chrono::{DateTime, NaiveDate, SecondsFormat, TimeZone, Utc};
 use prettytable::{Cell, Row, Table};
 use std::io::{self, prelude::*};
 
@@ -16,7 +16,7 @@ pub enum Command {
     Edit(String),
     Delete(String),
     Search(String),
-    RollOver(String),
+    RollOver,
 }
 
 pub fn prompt() -> Command {
@@ -51,7 +51,7 @@ pub fn prompt() -> Command {
         "--cancel" => Command::Cancel,
         "--open" => Command::Open,
         "--save" => Command::Save,
-        "--roll" => Command::RollOver(types),
+        "--roll" => Command::RollOver,
         _ => Command::Empty,
     }
 }
@@ -92,13 +92,38 @@ pub fn money_round(unrounded: f32) -> f32 {
     (unrounded * 100.0).round() / 100.0
 }
 
-pub fn try_into_date(possible_date: &String) -> DateTime<Utc> {
+pub fn try_into_date(possible_date: &str) -> DateTime<Utc> {
     let dt = NaiveDate::parse_from_str(possible_date, "%m/%d/%Y").expect("Couldn't parse date");
     DateTime::<Utc>::from_utc(dt.and_hms(0, 0, 0), Utc)
 }
 
 pub fn try_date_to_string(date_time: DateTime<Utc>) -> String {
     date_time.to_rfc3339_opts(SecondsFormat::Millis, true)
+}
+
+pub fn first_of_month(month: &str, year: &str) -> DateTime<Utc> {
+    let mth = match month {
+        "january" => 0,
+        "february" => 1,
+        "march" => 2,
+        "april" => 3,
+        "may" => 4,
+        "june" => 5,
+        "july" => 6,
+        "august" => 7,
+        "september" => 8,
+        "october" => 9,
+        "november" => 10,
+        "december" => 11,
+        _ => panic!("not a month"),
+    };
+    Utc.ymd(
+        year.parse()
+            .expect("Couldn't parse year in first_of_month()"),
+        mth,
+        1,
+    )
+    .and_hms(0, 0, 0)
 }
 
 pub enum Content {
