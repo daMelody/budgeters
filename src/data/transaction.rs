@@ -83,6 +83,23 @@ impl Transaction {
         }
     }
 
+    pub fn build(
+        date: DateTime<Utc>,
+        amount: f32,
+        account: String,
+        category: String,
+        description: String,
+    ) -> Transaction {
+        Transaction {
+            id: Uuid::new_v4(),
+            date,
+            amount,
+            account,
+            category,
+            description,
+        }
+    }
+
     pub fn new() -> Transaction {
         let date = cli::try_into_date(&cli::get_input("Date"));
         let amount = cli::try_into_money(&mut cli::get_input("Amount"));

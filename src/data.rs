@@ -1,4 +1,5 @@
 use crate::cli::{self, Content};
+use crate::filesystem;
 use account::Account;
 use category::Category;
 use std::collections::HashMap;
@@ -275,6 +276,24 @@ impl Data {
         } else {
             eprintln!("Unexpected filename while writing to cls");
             String::new()
+        }
+    }
+
+    pub fn roll(&mut self) {
+        self.update(); // make sure that Data is updated
+        filesystem::save(self);
+        self.transactions.clear();
+        let dir = filesystem::get_dir_path();
+        for acc in self.accounts.iter() {
+            let mut description = String::from("rolling into ");
+            description.push_str(&dir.month);
+            self.transactions.push(Transaction::build(
+                cli::first_of_month(&dir.month, &dir.year),
+                *acc.get_value(),
+                acc.get_name().to_string(),
+                String::from("Rollover"),
+                description,
+            ));
         }
     }
 
