@@ -115,11 +115,20 @@ pub fn first_of_month(month: &str, year: &str) -> DateTime<Utc> {
         "october" => 9,
         "november" => 10,
         "december" => 11,
-        _ => panic!("not a month"),
+        _ => {
+            eprintln!("Defaulting to january (0)");
+            0
+        }
     };
+    // TODO: fix the time
     Utc.ymd(
-        year.parse()
-            .expect("Couldn't parse year in first_of_month()"),
+        match year.parse() {
+            Ok(yr) => yr,
+            Err(_) => {
+                eprintln!("Defaulting to 1492");
+                1492
+            }
+        },
         mth,
         1,
     )

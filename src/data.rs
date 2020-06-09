@@ -281,8 +281,10 @@ impl Data {
 
     pub fn roll(&mut self) {
         self.update(); // make sure that Data is updated
-        filesystem::save(self);
+        println!("Save the existing Data below");
+        filesystem::save(self); // save existing Data
         self.transactions.clear();
+        println!("For the new month");
         let dir = filesystem::get_dir_path();
         for acc in self.accounts.iter() {
             let mut description = String::from("rolling into ");
@@ -295,6 +297,9 @@ impl Data {
                 description,
             ));
         }
+        self.update(); // update with Rollover
+        println!("Save the new Data below");
+        filesystem::save(self); // save the new Data
     }
 
     /// display the list of DataType

@@ -18,7 +18,6 @@ pub fn setup() -> Data {
 }
 
 pub fn save(data: &Data) {
-    println!("Saving...");
     let root = get_dir_path();
     // write out Accounts
     let mut accounts = root.full.to_string();
@@ -32,6 +31,7 @@ pub fn save(data: &Data) {
     transactions.push_str("/Transaction.cls");
     fs::write(Path::new(&transactions), data.to_cls(&transactions))
         .expect("Failed to save transactions.");
+    println!("Saved...");
 }
 
 pub struct DirPath {
